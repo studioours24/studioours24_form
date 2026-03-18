@@ -80,46 +80,45 @@
     </div>
 
     <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbySXR6ThrZVRaBEBClEXRF7SXIwOlahXql8AsMD4lOvs736n6xWdZFhPIvBDitlHKQZ/exec';
+
         const params = new URLSearchParams(window.location.search);
-        const status = params.get('status');
-        const message = params.get('message');
-        const receipt = params.get('receipt');
+        const token = params.get('token');
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Short delay for visual feedback
-            setTimeout(() => renderResult(), 500);
-        });
-
-        function renderResult() {
-            const card = document.getElementById('card');
-
-            if (!status) {
-                card.innerHTML = renderError('無効なアクセスです。', 'メール内の確認リンクからアクセスしてください。');
+            if (!token) {
+                showResult('error', '無効なアクセスです。', null);
                 return;
             }
+            verifyToken(token);
+        });
 
+        async function verifyToken(token) {
+            try {
+                const response = await fetch(`${GAS_URL}?token=${encodeURIComponent(token)}`);
+                const data = await response.json();
+                showResult(data.status, data.message, data.receipt);
+            } catch (error) {
+                console.error('Verification error:', error);
+                showResult('error', '確認処理中にエラーが発生しました。もう一度お試しください。', null);
+            }
+        }
+
+        function showResult(status, message, receipt) {
+            const card = document.getElementById('card');
             const configs = {
                 success: { icon: '✓', title: 'お申し込み確定', cls: 'success' },
                 already: { icon: '✓', title: '確認済み', cls: 'already' },
-                error: { icon: '!', title: 'エラー', cls: 'error' }
+                error:   { icon: '!', title: 'エラー', cls: 'error' }
             };
-
             const cfg = configs[status] || configs.error;
 
             card.innerHTML = `
                 <div class="icon icon--${cfg.cls}">${cfg.icon}</div>
                 <h1 class="title--${cfg.cls}">${cfg.title}</h1>
-                <p>${decodeURIComponent(message || '')}</p>
-                ${receipt ? `<p class="receipt">受付番号: ${decodeURIComponent(receipt)}</p>` : ''}
+                <p>${message || ''}</p>
+                ${receipt ? `<p class="receipt">受付番号: ${receipt}</p>` : ''}
                 ${status === 'success' ? '<p class="footer-msg">当日お会いできることを楽しみにしています！</p>' : ''}
-            `;
-        }
-
-        function renderError(title, msg) {
-            return `
-                <div class="icon icon--error">!</div>
-                <h1 class="title--error">${title}</h1>
-                <p>${msg}</p>
             `;
         }
     </script>
