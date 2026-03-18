@@ -7,7 +7,7 @@
 const CONFIG = {
     GAS_URL: 'https://script.google.com/macros/s/AKfycbySXR6ThrZVRaBEBClEXRF7SXIwOlahXql8AsMD4lOvs736n6xWdZFhPIvBDitlHKQZ/exec',
     ADMIN_EMAILS: ['nishikawaryo841@gmail.com', 'studio.ours24@gmail.com'],
-    PRICES: { general: 3000, student: 2000, returning: 2000 },
+    PRICES: { general: 3000, student: 2000, returning: 2500, studioUser: 2000 },
     DURATION_OPTIONS: {
         'バンド': [
             { value: '20分', label: '20分' },
@@ -47,6 +47,7 @@ const studioUsersGroup = $('#group-studioUsers');
 const studioUsersList = $('#studioUsersList');
 const addStudioUserBtn = $('#addStudioUser');
 const durationContainer = $('#performanceDuration');
+const studioUserCountInput = $('#studioUserCount');
 const priceBreakdown = $('#priceBreakdown');
 const priceTotal = $('#priceTotal');
 const submitBtn = $('#submitBtn');
@@ -81,7 +82,7 @@ function bindEvents() {
 
     // Studio usage
     studioUsageRadios.forEach(radio => {
-        radio.addEventListener('change', handleStudioUsageChange);
+        radio.addEventListener('change', (e) => { handleStudioUsageChange(e); updatePrice(); });
     });
 
     // Add studio user
@@ -89,6 +90,9 @@ function bindEvents() {
 
     // Member count
     memberCountInput.addEventListener('input', updatePrice);
+
+    // Studio user count
+    studioUserCountInput.addEventListener('input', updatePrice);
 
     // Form submit
     form.addEventListener('submit', handleSubmit);
@@ -160,7 +164,7 @@ function handleStudioUsageChange(e) {
     studioUsersGroup.style.display = show ? '' : 'none';
 
     if (!show) {
-        // Clear user name fields
+        studioUserCountInput.value = '';
         studioUsersList.innerHTML = `
             <div class="studio-user-row">
                 <input type="text" name="studioUsers[]" class="form-input" placeholder="ご利用者様のお名前">
@@ -196,33 +200,57 @@ function updatePrice() {
 
     const prevChecked = document.querySelector('input[name="previousParticipation"]:checked');
     const ageChecked = document.querySelector('input[name="ageCategory"]:checked');
+    const studioUsageChecked = document.querySelector('input[name="studioUsage"]:checked');
+    const studioCount = (studioUsageChecked && studioUsageChecked.value === '有')
+        ? Math.min(parseInt(studioUserCountInput.value) || 0, count)
+        : 0;
+    const nonStudioCount = count - studioCount;
 
-    let unitPrice = 0;
-    let priceLabel = '';
-
-    if (prevChecked && prevChecked.value === '有') {
-        unitPrice = CONFIG.PRICES.returning;
-        priceLabel = '前回出場者割引';
-    } else if (ageChecked) {
-        if (ageChecked.value === '中高生') {
-            unitPrice = CONFIG.PRICES.student;
-            priceLabel = '中高生';
-        } else {
-            unitPrice = CONFIG.PRICES.general;
-            priceLabel = '一般';
-        }
-    }
-
-    if (count > 0 && unitPrice > 0) {
-        const total = count * unitPrice;
-        priceBreakdown.innerHTML = `
-            <p class="price-line">${priceLabel}: ¥${unitPrice.toLocaleString()} × ${count}人</p>`;
-        priceTotal.textContent = `¥${total.toLocaleString()}`;
-    } else {
-        let msg = count === 0 ? '人数を入力してください' : '年齢区分を選択してください';
-        priceBreakdown.innerHTML = `<p class="price-line">${msg}</p>`;
+    if (count === 0) {
+        priceBreakdown.innerHTML = '<p class="price-line">人数を入力してください</p>';
         priceTotal.textContent = '—';
+        return;
     }
+
+    if (!ageChecked) {
+        priceBreakdown.innerHTML = '<p class="price-line">年齢区分を選択してください</p>';
+        priceTotal.textContent = '—';
+        return;
+    }
+
+    // Studio user price: always ¥2,000
+    const studioPrice = CONFIG.PRICES.studioUser;
+
+    // Non-studio price: depends on category
+    let nonStudioPrice = CONFIG.PRICES.general;
+    let nonStudioLabel = '一般';
+
+    if (ageChecked.value === '中高生') {
+        nonStudioPrice = CONFIG.PRICES.student;
+        nonStudioLabel = '中高生';
+    } else if (prevChecked && prevChecked.value === '有') {
+        nonStudioPrice = CONFIG.PRICES.returning;
+        nonStudioLabel = '前回参加者割引';
+    }
+
+    // Build breakdown
+    let breakdownHtml = '';
+    let total = 0;
+
+    if (studioCount > 0) {
+        const studioSubtotal = studioCount * studioPrice;
+        breakdownHtml += `<p class="price-line">スタジオ利用者: ¥${studioPrice.toLocaleString()} × ${studioCount}人</p>`;
+        total += studioSubtotal;
+    }
+
+    if (nonStudioCount > 0) {
+        const nonStudioSubtotal = nonStudioCount * nonStudioPrice;
+        breakdownHtml += `<p class="price-line">${nonStudioLabel}: ¥${nonStudioPrice.toLocaleString()} × ${nonStudioCount}人</p>`;
+        total += nonStudioSubtotal;
+    }
+
+    priceBreakdown.innerHTML = breakdownHtml;
+    priceTotal.textContent = `¥${total.toLocaleString()}`;
 }
 
 // ====== VALIDATION ======
@@ -434,12 +462,23 @@ function collectFormData() {
     else if (currentType === 'デュオ') memberCount = 2;
     else memberCount = parseInt(memberCountInput.value) || 0;
 
-    // Calculate price
+    // Calculate price (per-person)
     const prevPart = getRadio('previousParticipation');
     const ageCat = getRadio('ageCategory');
-    let unitPrice = prevPart === '有' ? CONFIG.PRICES.returning
-        : (ageCat === '中高生' ? CONFIG.PRICES.student : CONFIG.PRICES.general);
-    const totalPrice = memberCount * unitPrice;
+    const studioUsage = getRadio('studioUsage');
+    const studioUserCount = studioUsage === '有'
+        ? Math.min(parseInt(studioUserCountInput.value) || 0, memberCount)
+        : 0;
+    const nonStudioCount = memberCount - studioUserCount;
+
+    const studioTotal = studioUserCount * CONFIG.PRICES.studioUser;
+
+    let nonStudioUnitPrice = CONFIG.PRICES.general;
+    if (ageCat === '中高生') nonStudioUnitPrice = CONFIG.PRICES.student;
+    else if (prevPart === '有') nonStudioUnitPrice = CONFIG.PRICES.returning;
+
+    const nonStudioTotal = nonStudioCount * nonStudioUnitPrice;
+    const totalPrice = studioTotal + nonStudioTotal;
 
     return {
         performanceType: getRadio('performanceType'),
@@ -450,7 +489,8 @@ function collectFormData() {
         phone: $('#phone').value.trim(),
         previousParticipation: prevPart,
         ageCategory: ageCat,
-        studioUsage: getRadio('studioUsage'),
+        studioUsage: studioUsage,
+        studioUserCount: studioUserCount,
         studioUsers: studioUsers.join(', '),
         performanceDuration: getRadio('performanceDuration'),
         preferredDate1: getRadio('preferredDate1'),
@@ -459,7 +499,7 @@ function collectFormData() {
         preferredTimeSlot2: getRadio('preferredTimeSlot2'),
         cancelNotification: getRadio('cancelNotification'),
         remarks: $('#remarks').value.trim(),
-        unitPrice: unitPrice,
+        unitPrice: nonStudioUnitPrice,
         totalPrice: totalPrice,
         timestamp: new Date().toISOString()
     };

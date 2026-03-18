@@ -199,7 +199,12 @@
 
                     <!-- Studio Ours24 user names (conditional) -->
                     <div class="form-group conditional-group" id="group-studioUsers" style="display:none;">
-                        <label class="form-label">Studio Ours24 ご利用者様のお名前</label>
+                        <label class="form-label">スタジオ利用者の人数 <span class="required-mark">*</span></label>
+                        <input type="number" id="studioUserCount" class="form-input" min="1" max="20" placeholder="スタジオを利用しているメンバーの人数">
+                        <p class="form-hint">スタジオ利用者は ¥2,000/人 で計算されます</p>
+                        <p class="error-message" id="error-studioUserCount"></p>
+
+                        <label class="form-label" style="margin-top: 1.5rem;">Studio Ours24 ご利用者様のお名前</label>
                         <div id="studioUsersList">
                             <div class="studio-user-row">
                                 <input type="text" name="studioUsers[]" class="form-input" placeholder="ご利用者様のお名前">
