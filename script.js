@@ -7,7 +7,10 @@
 const CONFIG = {
     GAS_URL: 'https://script.google.com/macros/s/AKfycbySXR6ThrZVRaBEBClEXRF7SXIwOlahXql8AsMD4lOvs736n6xWdZFhPIvBDitlHKQZ/exec',
     ADMIN_EMAILS: ['nishikawaryo841@gmail.com', 'studio.ours24@gmail.com'],
-    PRICES: { general: 3000, student: 2000, returning: 2500, studioUser: 2000 },
+    PRICES: {
+        general: 3000, generalReturn: 2500, generalStudio: 2000,
+        student: 2000, studentReturn: 1500, studentStudio: 1500
+    },
     DURATION_OPTIONS: {
         'バンド': [
             { value: '20分', label: '20分' },
@@ -218,19 +221,20 @@ function updatePrice() {
         return;
     }
 
-    // Studio user price: always ¥2,000
-    const studioPrice = CONFIG.PRICES.studioUser;
+    const isStudent = ageChecked.value === '中高生';
+    const isReturning = prevChecked && prevChecked.value === '有';
 
-    // Non-studio price: depends on category
-    let nonStudioPrice = CONFIG.PRICES.general;
-    let nonStudioLabel = '一般';
+    // Studio user price: depends on age category
+    const studioPrice = isStudent ? CONFIG.PRICES.studentStudio : CONFIG.PRICES.generalStudio;
 
-    if (ageChecked.value === '中高生') {
-        nonStudioPrice = CONFIG.PRICES.student;
-        nonStudioLabel = '中高生';
-    } else if (prevChecked && prevChecked.value === '有') {
-        nonStudioPrice = CONFIG.PRICES.returning;
-        nonStudioLabel = '前回参加者割引';
+    // Non-studio price: depends on age category + returning status
+    let nonStudioPrice, nonStudioLabel;
+    if (isStudent) {
+        nonStudioPrice = isReturning ? CONFIG.PRICES.studentReturn : CONFIG.PRICES.student;
+        nonStudioLabel = isReturning ? '中高生（前回出場者）' : '中高生';
+    } else {
+        nonStudioPrice = isReturning ? CONFIG.PRICES.generalReturn : CONFIG.PRICES.general;
+        nonStudioLabel = isReturning ? '前回出場者' : 'ビジター';
     }
 
     // Build breakdown
@@ -238,8 +242,9 @@ function updatePrice() {
     let total = 0;
 
     if (studioCount > 0) {
+        const studioLabel = isStudent ? 'Studio会員（中高生）' : 'Studio会員';
         const studioSubtotal = studioCount * studioPrice;
-        breakdownHtml += `<p class="price-line">スタジオ利用者: ¥${studioPrice.toLocaleString()} × ${studioCount}人</p>`;
+        breakdownHtml += `<p class="price-line">${studioLabel}: ¥${studioPrice.toLocaleString()} × ${studioCount}人</p>`;
         total += studioSubtotal;
     }
 
@@ -471,11 +476,18 @@ function collectFormData() {
         : 0;
     const nonStudioCount = memberCount - studioUserCount;
 
-    const studioTotal = studioUserCount * CONFIG.PRICES.studioUser;
+    const isStudent = ageCat === '中高生';
+    const isReturning = prevPart === '有';
 
-    let nonStudioUnitPrice = CONFIG.PRICES.general;
-    if (ageCat === '中高生') nonStudioUnitPrice = CONFIG.PRICES.student;
-    else if (prevPart === '有') nonStudioUnitPrice = CONFIG.PRICES.returning;
+    const studioUnitPrice = isStudent ? CONFIG.PRICES.studentStudio : CONFIG.PRICES.generalStudio;
+    const studioTotal = studioUserCount * studioUnitPrice;
+
+    let nonStudioUnitPrice;
+    if (isStudent) {
+        nonStudioUnitPrice = isReturning ? CONFIG.PRICES.studentReturn : CONFIG.PRICES.student;
+    } else {
+        nonStudioUnitPrice = isReturning ? CONFIG.PRICES.generalReturn : CONFIG.PRICES.general;
+    }
 
     const nonStudioTotal = nonStudioCount * nonStudioUnitPrice;
     const totalPrice = studioTotal + nonStudioTotal;

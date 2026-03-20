@@ -46,11 +46,20 @@
                     <p class="info-main">2026年7月4日(土)・5日(日)</p>
                     <p class="info-sub">10:00 スタート</p>
                 </div>
-                <div class="info-card">
+                <div class="info-card info-card--fee">
                     <div class="info-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-                    <h3>FEE</h3>
-                    <p class="info-main">一般 ¥3,000<small>/人</small></p>
-                    <p class="info-sub">中高生 ¥2,000<small>/人</small></p>
+                    <h3>FEE<small class="fee-unit">（税込/人）</small></h3>
+                    <table class="fee-matrix">
+                        <thead>
+                            <tr><th></th><th>一般</th><th>中高生</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="fee-row-label">ビジター</td><td>¥3,000</td><td>¥2,000</td></tr>
+                            <tr><td class="fee-row-label">前回出場者</td><td>¥2,500</td><td>¥1,500</td></tr>
+                            <tr><td class="fee-row-label">Studio会員</td><td>¥2,000</td><td>¥1,500</td></tr>
+                        </tbody>
+                    </table>
+                    <p class="fee-note">★ 前回出場者・Studio会員はおトクに！</p>
                 </div>
                 <div class="info-card">
                     <div class="info-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
@@ -161,7 +170,7 @@
                                 <span>いいえ</span>
                             </label>
                         </div>
-                        <p class="form-hint form-hint--discount" id="hint-previousDiscount" style="display:none;">前回出場者割引: ¥2,000/人 が適用されます</p>
+                        <p class="form-hint form-hint--discount" id="hint-previousDiscount" style="display:none;">前回出場者割引が適用されます</p>
                         <p class="error-message" id="error-previousParticipation"></p>
                     </div>
 
