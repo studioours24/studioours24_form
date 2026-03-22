@@ -4,6 +4,15 @@
 
 ---
 
+## 2026-03-22
+
+### ⚙️ メール送信元を studio.ours24@gmail.com に変更
+- `gas/Code.gs`: `MailApp` → `GmailApp` に変更、`from` パラメータで送信元を `studio.ours24@gmail.com` に固定
+- `gas/Code.gs`: `SENDER_EMAIL` / `SENDER_NAME` 定数を追加、確認メール・管理者通知の両方に適用
+- Gmail エイリアス設定（`nishikawaryo841@gmail.com` → `studio.ours24@gmail.com`）完了済み
+
+---
+
 ## 2026-03-20
 
 ### 💰 料金体系を6パターンに変更 + 料金マトリクスUI
