@@ -631,7 +631,7 @@ function showCompletion(email){$('#completionEmail').textContent=email;$('#compl
 (function initSetlist(){
   const search=$('#setlistSearch'), box=$('#setlistSuggest'), items=$('#setlistItems'), hidden=$('#setlist'), manualBtn=$('#setlistManualAdd');
   if(!search) return;
-  let songs=[], results=[], active=-1, timer=null;
+  let songs=[], results=[], active=-1, timer=null, reqSeq=0;
 
   function sync(){
     hidden.value=songs.map(s=>s.artist?`${s.title} / ${s.artist}`:s.title).join('\n');
@@ -672,14 +672,12 @@ function showCompletion(email){$('#completionEmail').textContent=email;$('#compl
     box.classList.add('open');
   }
   function itunes(term){
-    const cb='itc_'+Math.random().toString(36).slice(2);
-    const s=document.createElement('script'); let done=false;
-    window[cb]=(data)=>{ done=true; cleanup(); showResults((data.results||[]).map(x=>({trackName:x.trackName,artistName:x.artistName}))); };
-    function cleanup(){ try{delete window[cb];}catch(_){ } s.remove(); }
-    s.onerror=()=>{ if(!done){ cleanup(); showResults(null); } };
-    s.src=`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&country=JP&media=music&entity=song&limit=8&callback=${cb}`;
-    document.body.appendChild(s);
-    setTimeout(()=>{ if(!done){ cleanup(); showResults(null); } },6000);
+    const my=++reqSeq;
+    const url=`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&country=JP&media=music&entity=song&limit=8`;
+    fetch(url)
+      .then(r=>{ if(!r.ok) throw new Error('http '+r.status); return r.json(); })
+      .then(data=>{ if(my!==reqSeq) return; showResults((data.results||[]).map(x=>({trackName:x.trackName,artistName:x.artistName}))); })
+      .catch(()=>{ if(my!==reqSeq) return; showResults(null); });
   }
   function highlight(){ [...box.children].forEach((c,i)=>c.classList && c.classList.toggle('active',i===active)); }
 
