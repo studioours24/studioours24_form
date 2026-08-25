@@ -125,6 +125,11 @@ body{font-family:var(--font-body);color:var(--text-primary);background:var(--bg-
 .btn-add-manual:hover{border-color:var(--accent-primary);color:var(--accent-primary);background:rgba(245,158,11,0.05);}
 .setlist-items{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.9rem;}
 .setlist-items:empty{margin-top:0;}
+.setlist-rows{display:flex;flex-direction:column;gap:0.6rem;margin-bottom:0.2rem;}
+.setlist-row .sl-fields{flex:1;display:flex;gap:0.5rem;min-width:0;}
+.setlist-row .sl-fields .form-input{flex:1;min-width:0;}
+.setlist-row .sl-fields .sl-artist{max-width:45%;}
+@media(max-width:640px){.setlist-row{align-items:stretch;}.setlist-row .sl-fields{flex-direction:column;}.setlist-row .sl-fields .sl-artist{max-width:none;}}
 .setlist-row{display:flex;align-items:center;gap:0.65rem;padding:0.65rem 0.9rem;background:rgba(255,255,255,0.03);border:1px solid var(--bg-card-border);border-radius:var(--radius-sm);animation:fadeSlideIn .2s;}
 .setlist-row .num{font-family:var(--font-display);font-weight:800;color:var(--accent-primary);min-width:1.4rem;text-align:center;}
 .setlist-row .info{flex:1;min-width:0;}
@@ -417,14 +422,10 @@ body{font-family:var(--font-body);color:var(--text-primary);background:var(--bg-
             <h3>セットリスト</h3>
           </div>
           <div class="form-group">
-            <label class="form-label" for="setlistSearch">演奏予定のセットリスト <span class="required-mark">*</span></label>
-            <p class="form-hint">曲名やアーティスト名を入力すると候補が出ます。選ぶと下のリストに追加されます。候補に無い曲は、入力して「手入力で追加」でOKです。J-POP・映画音楽・アニソン・ジャズ/クラシックのアレンジなど大歓迎！</p>
-            <div class="setlist-search-wrap">
-              <input type="text" id="setlistSearch" class="form-input" placeholder="例: Lemon／米津玄師、カントリーロード など" autocomplete="off">
-              <div class="setlist-suggest" id="setlistSuggest"></div>
-            </div>
-            <button type="button" class="btn-add-manual" id="setlistManualAdd">＋ 入力した内容を手入力で追加</button>
-            <div class="setlist-items" id="setlistItems"></div>
+            <label class="form-label">演奏予定のセットリスト <span class="required-mark">*</span></label>
+            <p class="form-hint">曲名を入力してください（アーティスト名は任意）。「＋ 曲を追加」で行を増やせます。J-POP・映画音楽・アニソン・ジャズ/クラシックのアレンジなど大歓迎！</p>
+            <div class="setlist-rows" id="setlistRows"></div>
+            <button type="button" class="btn-add-manual" id="setlistAddRow">＋ 曲を追加</button>
             <textarea id="setlist" name="setlist" style="display:none;"></textarea>
             <p class="error-message" id="error-setlist"></p>
           </div>
@@ -627,75 +628,82 @@ async function handleSubmit(e) {
 function setLoading(on){submitBtn.disabled=on;submitBtn.querySelector('.btn-submit-text').style.display=on?'none':'';submitBtn.querySelector('.btn-submit-loading').style.display=on?'':'none';}
 function showCompletion(email){$('#completionEmail').textContent=email;$('#completionOverlay').style.display='';document.body.style.overflow='hidden';}
 
-/* ===== セットリスト：曲名/アーティスト オートコンプリート（iTunes Search API・JSONP）＋手入力 ===== */
+/* ===== セットリスト：曲名（＋任意でアーティスト名）の行入力。外部API不要で確実に動作 ===== */
 (function initSetlist(){
-  const search=$('#setlistSearch'), box=$('#setlistSuggest'), items=$('#setlistItems'), hidden=$('#setlist'), manualBtn=$('#setlistManualAdd');
-  if(!search) return;
-  let songs=[], results=[], active=-1, timer=null, reqSeq=0;
+  const rows=$('#setlistRows'), addBtn=$('#setlistAddRow'), hidden=$('#setlist');
+  if(!rows) return;
 
+  function renumber(){ rows.querySelectorAll('.setlist-row .num').forEach((n,i)=>n.textContent=(i+1)); }
   function sync(){
-    hidden.value=songs.map(s=>s.artist?`${s.title} / ${s.artist}`:s.title).join('\n');
+    const lines=[];
+    rows.querySelectorAll('.setlist-row').forEach(r=>{
+      const t=r.querySelector('.sl-title').value.trim();
+      const a=r.querySelector('.sl-artist').value.trim();
+      if(t) lines.push(a ? `${t} / ${a}` : t);
+    });
+    hidden.value=lines.join('\n');
     clearFieldError(hidden);
-    render();
   }
-  function render(){
-    items.innerHTML='';
-    songs.forEach((s,i)=>{
-      const row=document.createElement('div'); row.className='setlist-row';
-      row.innerHTML='<span class="num"></span><span class="info"><span class="t"></span><span class="a"></span></span><button type="button" class="rm" aria-label="削除">✕</button>';
-      row.querySelector('.num').textContent=(i+1);
-      row.querySelector('.t').textContent=s.title;
-      row.querySelector('.a').textContent=s.artist||'';
-      row.querySelector('.rm').addEventListener('click',()=>{ songs.splice(i,1); sync(); });
-      items.appendChild(row);
-    });
+  function addRow(focus){
+    const row=document.createElement('div'); row.className='setlist-row';
+    row.innerHTML='<span class="num"></span>'+
+      '<div class="sl-fields">'+
+        '<input type="text" class="form-input sl-title" placeholder="曲名（例: Lemon）">'+
+        '<input type="text" class="form-input sl-artist" placeholder="アーティスト（任意）">'+
+      '</div>'+
+      '<button type="button" class="rm" aria-label="削除">✕</button>';
+    row.querySelector('.rm').addEventListener('click',()=>{ row.remove(); if(rows.children.length===0) addRow(); renumber(); sync(); });
+    row.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',sync));
+    rows.appendChild(row); renumber();
+    if(focus) row.querySelector('.sl-title').focus();
   }
-  function addSong(title,artist){
-    title=(title||'').trim();
-    if(!title) return;
-    songs.push({title:title, artist:(artist||'').trim()});
-    sync(); search.value=''; closeBox(); search.focus();
-  }
-  function closeBox(){ box.classList.remove('open'); box.innerHTML=''; results=[]; active=-1; }
-  function showResults(list){
-    results=list||[]; active=-1; box.innerHTML='';
-    if(!list){ box.innerHTML='<div class="suggest-note">候補を取得できませんでした。入力して「手入力で追加」で登録できます。</div>'; box.classList.add('open'); return; }
-    if(list.length===0){ box.innerHTML='<div class="suggest-note">候補が見つかりません。「手入力で追加」でそのまま登録できます。</div>'; box.classList.add('open'); return; }
-    list.forEach(r=>{
-      const el=document.createElement('div'); el.className='suggest-item';
-      el.innerHTML='<span class="suggest-title"></span><span class="suggest-artist"></span>';
-      el.querySelector('.suggest-title').textContent=r.trackName;
-      el.querySelector('.suggest-artist').textContent=r.artistName;
-      el.addEventListener('click',()=>addSong(r.trackName,r.artistName));
-      box.appendChild(el);
-    });
-    box.classList.add('open');
-  }
-  function itunes(term){
-    const my=++reqSeq;
-    const url=`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&country=JP&media=music&entity=song&limit=8`;
-    fetch(url)
-      .then(r=>{ if(!r.ok) throw new Error('http '+r.status); return r.json(); })
-      .then(data=>{ if(my!==reqSeq) return; showResults((data.results||[]).map(x=>({trackName:x.trackName,artistName:x.artistName}))); })
-      .catch(()=>{ if(my!==reqSeq) return; showResults(null); });
-  }
-  function highlight(){ [...box.children].forEach((c,i)=>c.classList && c.classList.toggle('active',i===active)); }
+  addBtn.addEventListener('click',()=>addRow(true));
+  // 最初に3行用意
+  addRow(); addRow(); addRow();
+})();
 
-  search.addEventListener('input',()=>{
-    const term=search.value.trim();
-    clearTimeout(timer);
-    if(term.length<2){ closeBox(); return; }
-    timer=setTimeout(()=>itunes(term),300);
+/* ===== 開催日ごとの受付 ON/OFF（定員締切の切替） =====
+   締め切りたい日を false にするだけ。
+   例）土曜を締切: '9月19日(土)': false  /  再開: true            */
+(function initDateAvailability(){
+  const DAY_OPEN = {
+    '9月19日(土)': false,   // ← 土曜（締切中）。再開するなら true
+    '9月20日(日)': true,    // ← 日曜（受付中）
+  };
+
+  const openDays = Object.keys(DAY_OPEN).filter(k => DAY_OPEN[k]);
+  const allOpen  = Object.values(DAY_OPEN).every(Boolean);
+  const closed   = Object.keys(DAY_OPEN).filter(k => !DAY_OPEN[k]);
+
+  ['preferredDate1','preferredDate2'].forEach(groupId => {
+    const wrap = $('#'+groupId); if(!wrap) return;
+    wrap.querySelectorAll('.radio-pill').forEach(pill => {
+      const inp = pill.querySelector('input'); const v = inp.value;
+      let hide = false;
+      if (v === 'どちらでも可') hide = !allOpen;             // 両日開いている時だけ表示
+      else if (v in DAY_OPEN)  hide = !DAY_OPEN[v];          // 締切日は非表示
+      if (hide) { inp.checked = false; inp.disabled = true; pill.style.display = 'none'; }
+    });
   });
-  search.addEventListener('keydown',(e)=>{
-    const open=box.classList.contains('open') && results.length;
-    if(open && e.key==='ArrowDown'){ e.preventDefault(); active=Math.min(active+1,results.length-1); highlight(); }
-    else if(open && e.key==='ArrowUp'){ e.preventDefault(); active=Math.max(active-1,0); highlight(); }
-    else if(e.key==='Enter'){ e.preventDefault(); if(open && active>=0){ addSong(results[active].trackName,results[active].artistName); } else { addSong(search.value); } }
-    else if(e.key==='Escape'){ closeBox(); }
-  });
-  manualBtn.addEventListener('click',()=>addSong(search.value));
-  document.addEventListener('click',(e)=>{ if(!e.target.closest('.setlist-search-wrap')) closeBox(); });
+
+  // 開催日が1日だけなら「第2希望」欄は不要なので隠す
+  if (openDays.length <= 1) {
+    const g2 = $('#preferredDate2');
+    const fg = g2 && g2.closest('.form-group');
+    if (fg) fg.style.display = 'none';
+  }
+
+  // 締切の案内を希望日欄の先頭に表示
+  if (closed.length) {
+    const note = document.createElement('p');
+    note.className = 'form-hint';
+    note.style.color = 'var(--accent-secondary)';
+    note.style.fontWeight = '700';
+    note.textContent = '※ ' + closed.join('・') + ' は定員に達したため締め切りました。' +
+      (openDays.length ? '（' + openDays.join('・') + ' は受付中です）' : '');
+    const g1 = $('#preferredDate1');
+    if (g1 && g1.parentNode) g1.parentNode.insertBefore(note, g1);
+  }
 })();
 </script>
 </body>
