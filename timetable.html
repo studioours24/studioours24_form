@@ -127,6 +127,20 @@ body{font-family:var(--font-body);color:var(--text-primary);background:var(--bg-
 .slot-time{flex-shrink:0;width:6.6rem;font-family:var(--font-display);font-weight:700;font-size:0.95rem;color:var(--text-primary);}
 .slot-name{flex:1;min-width:0;font-size:0.98rem;font-weight:700;color:var(--text-primary);word-break:break-word;}
 .slot.tbd .slot-time,.slot.tbd .slot-name{color:var(--text-dim);font-weight:500;}
+.slot-time small{color:var(--text-secondary);font-weight:600;font-size:0.78em;margin-left:0.15rem;}
+.slot .slot-sub{display:block;font-size:0.7rem;font-weight:700;color:var(--accent-secondary);margin-bottom:0.1rem;letter-spacing:0.02em;}
+/* 転換・セッティング・終演などの補助行 */
+.slot.change,.slot.info,.slot.end{background:transparent;border-style:dashed;border-color:rgba(255,255,255,0.09);padding-top:0.6rem;padding-bottom:0.6rem;}
+.slot.change .slot-name,.slot.info .slot-name,.slot.end .slot-name{color:var(--text-dim);font-weight:600;font-size:0.88rem;}
+.slot.change .slot-time,.slot.info .slot-time,.slot.end .slot-time{color:var(--text-dim);font-weight:600;}
+.slot.change .slot-no,.slot.info .slot-no,.slot.end .slot-no{background:transparent;border-color:transparent;color:var(--text-dim);font-size:0.85rem;}
+/* いま出演中のハイライト */
+.slot.now{border-color:var(--accent-gold);background:rgba(251,191,36,0.12);box-shadow:0 0 0 1px var(--accent-gold),0 0 26px var(--accent-primary-glow);}
+.slot.now .slot-no{background:var(--accent-gold);color:#3a1c00;border-color:var(--accent-gold);}
+.now-tag{display:inline-flex;align-items:center;gap:0.3rem;margin-left:0.5rem;font-family:var(--font-display);font-size:0.6rem;font-weight:800;letter-spacing:0.1em;color:#fff;background:var(--live);border-radius:100px;padding:0.1rem 0.5rem;vertical-align:middle;animation:livepulseTag 1.6s infinite;}
+@keyframes livepulseTag{0%{box-shadow:0 0 0 0 rgba(244,63,94,0.5)}70%{box-shadow:0 0 0 7px rgba(244,63,94,0)}100%{box-shadow:0 0 0 0 rgba(244,63,94,0)}}
+.now-status .live{color:#ff6b81;}
+.now-status .dotlive{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--live);margin-right:0.35rem;vertical-align:middle;animation:livepulseTag 1.6s infinite;}
 
 .tt-foot{margin-top:2rem;text-align:center;}
 .tt-note{font-size:0.82rem;color:var(--text-dim);line-height:1.9;}
@@ -183,7 +197,7 @@ body{font-family:var(--font-body);color:var(--text-primary);background:var(--bg-
         <div class="cd-unit"><span class="cd-num" id="cdS">--</span><span class="cd-lbl">SEC</span></div>
       </div>
       <p class="countdown-msg" id="cdMsg">🎉 開催中！</p>
-      <p class="coming-soon">🎤 出演者・タイムテーブルの発表は間もなく！！</p>
+      <p class="coming-soon">🎉 出演ラインナップ発表！</p>
     </div>
 
     <!-- MARQUEE -->
@@ -229,14 +243,40 @@ body{font-family:var(--font-body);color:var(--text-primary);background:var(--bg-
    days       : 各日の start と acts。acts の {name,time} を埋めるだけで反映。
    ===================================================================== */
 const TIMETABLE = {
-  status: '出演者調整中',
-  slotMinutes: null,          // 例: 20 で 11:00,11:20… と自動計算
   eventStart: '2026-09-19T11:00:00+09:00',  // カウントダウンの目標
   days: [
-    { label:'9月19日（土）', note:'全7組', start:'11:00',
-      acts:[{name:'',time:''},{name:'',time:''},{name:'',time:''},{name:'',time:''},{name:'',time:''},{name:'',time:''},{name:'',time:''}] },
-    { label:'9月20日（日）', note:'全6組', start:'11:00',
-      acts:[{name:'',time:''},{name:'',time:''},{name:'',time:''},{name:'',time:''},{name:'',time:''},{name:'',time:''}] },
+    { label:'9月19日（土）', note:'全7組', date:'2026-09-19', rows:[
+      { time:'10:40〜11:00', dur:"20'", name:'※ セッティング（挨拶）', type:'info' },
+      { no:1, time:'11:00〜11:40', dur:"40'", name:'Rough ours', type:'act' },
+      { time:'11:40〜12:00', dur:"20'", name:'転換', type:'change' },
+      { no:2, time:'12:00〜12:40', dur:"40'", name:'Aloha・Nonbase', sub:'ハワイアンバンド', type:'act' },
+      { time:'12:40〜13:00', dur:"20'", name:'転換', type:'change' },
+      { no:3, time:'13:00〜13:40', dur:"40'", name:'HOLOHOLO', type:'act' },
+      { time:'13:40〜14:00', dur:"20'", name:'転換', type:'change' },
+      { no:4, time:'14:00〜14:40', dur:"40'", name:'Autumn Sky', type:'act' },
+      { time:'14:40〜15:00', dur:"20'", name:'転換', type:'change' },
+      { no:5, time:'15:00〜15:40', dur:"40'", name:'Naughty Boys', type:'act' },
+      { time:'15:40〜16:00', dur:"20'", name:'転換', type:'change' },
+      { no:6, time:'16:00〜16:40', dur:"40'", name:'いるバルず', type:'act' },
+      { time:'16:40〜17:00', dur:"20'", name:'転換', type:'change' },
+      { no:7, time:'17:00〜17:40', dur:"40'", name:'ドキドキきどちゃん', type:'act' },
+      { time:'17:40〜18:00', dur:"20'", name:'初日終演・閉場', type:'end' },
+    ]},
+    { label:'9月20日（日）', note:'全6組', date:'2026-09-20', rows:[
+      { time:'10:40〜11:00', dur:"20'", name:'※ セッティング（挨拶）', type:'info' },
+      { no:1, time:'11:00〜11:40', dur:"40'", name:'狭山ジャズサークル', type:'act' },
+      { time:'11:40〜12:00', dur:"20'", name:'転換', type:'change' },
+      { no:2, time:'12:00〜12:40', dur:"40'", name:'ZOOT36', type:'act' },
+      { time:'12:40〜13:00', dur:"20'", name:'転換', type:'change' },
+      { no:3, time:'13:00〜13:40', dur:"40'", name:'ROW GUNS 1/4', type:'act' },
+      { time:'13:40〜14:00', dur:"20'", name:'転換', type:'change' },
+      { no:4, time:'14:00〜14:40', dur:"40'", name:'Johnny.G', type:'act' },
+      { time:'14:40〜15:00', dur:"20'", name:'転換', type:'change' },
+      { no:5, time:'15:00〜15:40', dur:"40'", name:'Take（FamiLion）', type:'act' },
+      { time:'15:40〜16:00', dur:"20'", name:'転換', type:'change' },
+      { no:6, time:'16:00〜16:40', dur:"40'", name:'朝はパン派', type:'act' },
+      { time:'16:40〜17:00', dur:"20'", name:'完全終演・閉場', type:'end' },
+    ]},
   ],
 };
 
@@ -300,27 +340,9 @@ const TIMETABLE = {
     tick(); setInterval(tick,1000);
   })();
 
-  /* ---- リアルタイム時計（JST） ---- */
-  (function clock(){
-    const elC=$('#nowClock'), elS=$('#nowStatus');
-    function jstParts(){
-      const now=new Date();
-      const j=new Date(now.getTime()+(now.getTimezoneOffset()*60000)+(9*3600000));
-      return j;
-    }
-    function tick(){
-      const j=jstParts();
-      elC.textContent=pad(j.getHours())+':'+pad(j.getMinutes())+':'+pad(j.getSeconds());
-    }
-    tick(); setInterval(tick,1000);
-    // ステータス：スケジュール未確定なら status を表示
-    if(TIMETABLE.status){ elS.innerHTML='<b>'+TIMETABLE.status+'</b>'; }
-    else { elS.textContent='本日のタイムテーブルは下記のとおりです'; }
-  })();
-
-  /* ---- タイムテーブル描画 ---- */
+  /* ---- タイムテーブル描画（確定版） ---- */
+  const slotEls=[];  // realtime用: {el,startMs,endMs,type,no,name}
   (function render(){
-    const addMin=(hhmm,mins)=>{const[h,m]=hhmm.split(':').map(Number);const t=h*60+m+mins;return pad(Math.floor(t/60)%24)+':'+pad(t%60);};
     const c=$('#ttContainer'); c.innerHTML='';
     TIMETABLE.days.forEach(day=>{
       const block=document.createElement('div'); block.className='day-block';
@@ -329,23 +351,61 @@ const TIMETABLE = {
       if(day.note){const nn=document.createElement('span'); nn.className='day-note'; nn.textContent=day.note; head.appendChild(nn);}
       block.appendChild(head);
       const list=document.createElement('div'); list.className='slot-list';
-      day.acts.forEach((act,i)=>{
-        const slot=document.createElement('div'); slot.className='slot';
-        let timeText=act.time;
-        if(!timeText){
-          if(TIMETABLE.slotMinutes&&day.start){ timeText=addMin(day.start,i*TIMETABLE.slotMinutes)+'–'+addMin(day.start,(i+1)*TIMETABLE.slotMinutes); }
-          else { timeText='調整中'; }
-        }
-        const isTbd=!act.name;
-        if(isTbd) slot.classList.add('tbd');
+      day.rows.forEach(row=>{
+        const slot=document.createElement('div'); slot.className='slot '+(row.type||'act');
         slot.innerHTML='<span class="slot-no"></span><span class="slot-time"></span><span class="slot-name"></span>';
-        slot.querySelector('.slot-no').textContent=(i+1);
-        slot.querySelector('.slot-time').textContent=timeText;
-        slot.querySelector('.slot-name').textContent=act.name||'出演者調整中';
+        slot.querySelector('.slot-no').textContent = row.no ? row.no : '';
+        const tt=slot.querySelector('.slot-time');
+        tt.textContent=row.time;
+        if(row.dur){ const sm=document.createElement('small'); sm.textContent='('+row.dur+')'; tt.appendChild(document.createTextNode(' ')); tt.appendChild(sm); }
+        const nm=slot.querySelector('.slot-name');
+        if(row.sub){ const sub=document.createElement('span'); sub.className='slot-sub'; sub.textContent=row.sub; nm.appendChild(sub); }
+        nm.appendChild(document.createTextNode(row.name));
         list.appendChild(slot);
+        const parts=row.time.split('〜');
+        const startMs=Date.parse(day.date+'T'+parts[0]+':00+09:00');
+        const endMs=Date.parse(day.date+'T'+parts[1]+':00+09:00');
+        slotEls.push({el:slot,startMs,endMs,type:(row.type||'act'),no:row.no,name:row.name});
       });
       block.appendChild(list); c.appendChild(block);
     });
+  })();
+
+  /* ---- リアルタイム時計＋「今出演中」ハイライト ---- */
+  (function realtime(){
+    const elC=$('#nowClock'), elS=$('#nowStatus');
+    const days=TIMETABLE.days.map(d=>d.date);
+    function jstNow(){ const n=new Date(); return new Date(n.getTime()+(n.getTimezoneOffset()*60000)+(9*3600000)); }
+    function update(){
+      const j=jstNow();
+      elC.textContent=pad(j.getHours())+':'+pad(j.getMinutes())+':'+pad(j.getSeconds());
+      const now=Date.now();
+      const todayStr=j.getFullYear()+'-'+pad(j.getMonth()+1)+'-'+pad(j.getDate());
+      // ハイライトリセット
+      slotEls.forEach(s=>{ s.el.classList.remove('now'); const t=s.el.querySelector('.now-tag'); if(t) t.remove(); });
+      let active=null;
+      slotEls.forEach(s=>{ if(now>=s.startMs && now<s.endMs) active=s; });
+      if(active){
+        active.el.classList.add('now');
+        if(active.type==='act'){
+          const tag=document.createElement('span'); tag.className='now-tag'; tag.textContent='● NOW';
+          active.el.querySelector('.slot-name').appendChild(tag);
+          elS.innerHTML='<span class="dotlive"></span><span class="live">出演中</span>： '+(active.no?active.no+'. ':'')+active.name;
+        } else if(active.type==='change'){
+          elS.innerHTML='<span class="dotlive"></span>転換中… まもなく次のステージ';
+        } else {
+          elS.textContent=active.name;
+        }
+        return;
+      }
+      const minS=Math.min.apply(null,slotEls.map(s=>s.startMs));
+      const maxE=Math.max.apply(null,slotEls.map(s=>s.endMs));
+      if(now<minS){ elS.innerHTML='<b>まもなく開催！</b> 9/19(土)・9/20(日) 11:00〜'; }
+      else if(now>=maxE){ elS.innerHTML='<b>ご来場ありがとうございました！</b>'; }
+      else if(days.includes(todayStr)){ elS.innerHTML='<b>本日開催中！</b> 次のステージまでお待ちください'; }
+      else { elS.textContent='9/19(土)・9/20(日) 開催 ／ 11:00 スタート'; }
+    }
+    update(); setInterval(update,15000);
   })();
 })();
 </script>
