@@ -192,6 +192,8 @@ body{font-family:var(--font-body);color:var(--text-primary);background:var(--bg-
 .bm-sub{font-family:var(--font-display);font-size:0.72rem;font-weight:800;letter-spacing:0.08em;color:var(--accent-secondary);text-transform:uppercase;margin-bottom:0.25rem;}
 .bm-sub:empty{display:none;}
 .bm-name{font-family:var(--font-display);font-size:clamp(1.3rem,5vw,1.7rem);font-weight:900;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;line-height:1.2;}
+.bm-read{font-size:0.82rem;color:var(--text-dim);margin:-0.55rem 0 0.9rem;}
+.bm-read:empty{display:none;}
 .bm-bio{font-size:0.95rem;color:var(--text-secondary);line-height:1.9;white-space:pre-wrap;}
 .bm-bio:empty::before{content:'紹介文は準備中です';color:var(--text-dim);}
 body.modal-open{overflow:hidden;}
@@ -279,6 +281,7 @@ body.modal-open{overflow:hidden;}
       <div class="bm-body">
         <p class="bm-sub" id="bmSub"></p>
         <h3 class="bm-name" id="bmName"></h3>
+        <p class="bm-read" id="bmRead"></p>
         <p class="bm-bio" id="bmBio"></p>
       </div>
     </div>
@@ -324,6 +327,8 @@ const TIMETABLE = {
     ]},
   ],
 };
+
+const BAND_INFO = {"Rough ours": {"read": "ラフアワーズ", "form": "バンド（ジャズ）", "bio": "こんにちは！ Rough Oursです。ボーカル、トランペット、ピアノ、ベース、ドラムの男女5人のバンドです。jazzを中心にこの地で活動しています。\n\n今回は何処かで聴いたことのあるような昭和歌謡、ボサノバ、サンバにジャズと色々なジャンルの曲を演りますのでお楽しみに😊\n\nそれと宣伝なんですが、12月13日(日)に狭山市のライブハウス シリスタで単独ライブを行います。こちらもお待ちしておりまーす😊"}, "Aloha・Nonbase": {"read": "アロハ・ノンベース", "form": "バンド（ハワイアン）", "bio": "2023年8月にバンド結成、メンバー5名！皆、高齢ですが、楽しくパワフルにLIVE等で活動しています。"}, "HOLOHOLO": {"read": "ホロホロ", "form": "デュオ（弾き語り）", "bio": "三線、ウクレレ、ギターでお届けする弾き語りデュオです。誰もが知っているあの名曲や、「これ、聴いたことある！」というお馴染みのメロディをお届けします。さらに、「えっ！この曲を三線で！？」というちょっとビックリなアレンジも！入間川ニコニコ・テラスで結成した私たちの演奏を、どうぞお楽しみください。"}, "Autumn Sky": {"read": "オータムスカイ", "form": "バンド（ポップス）", "bio": "StudioOurs24様から今回のイベントをご紹介いただき、音楽教室で急遽結成した今秋限定の急造バンドです。変わりやすいと言われる秋の空のように担当パートを変えながら演奏します！"}, "Naughty Boys": {"read": "ノーティーボーイズ", "form": "デュオ（ギター弾き語り）", "bio": "入間川七夕祭りをきっかけに結成した、弾き語りギター・デュオです。ビートルズ、モンキーズ、エリック・クラプトンなど、往年の洋楽の名曲を中心に、懐かしくも心躍るナンバーをお届けします！ギター2本と歌声で、あの頃の音楽をもう一度！"}, "いるバルず": {"form": "バンド（ポップス）", "bio": "入間市商工会バンドです！誰もが口ずさめる昭和ポップスをお届けします！ただいま絶賛コールドスリープ中につき練習不足…当日は「半解凍」のまま全力で頑張ります！"}, "ドキドキきどちゃん": {"form": "ソロ（ピアノ弾き語り）", "bio": "日々、笑顔でいることがモットーで、唄うことが大好きです🎵 皆様の心に少しでも残るように精一杯唄わせていただきま〜す😄"}, "狭山ジャズサークル": {"form": "バンド（ジャズ）", "bio": "昨年春に結成し、新たなメンバーや子どもたちも加わり、世代を超えて楽しくジャズを演奏しています。今回、出演のお話をいただき、「みんなで出たい！」と気持ちが一致。急ピッチで練習をしてきました！世代を超えた仲間たちのジャズを、ぜひお楽しみください♪"}, "ROW GUNS 1/4": {"read": "ロウガンズ ヨンブンノイチ", "form": "ソロヴォーカル", "bio": "今回はバンド活動を離れ、初めてソロでJ-POPを唄います！"}, "Johnny.G": {"read": "ジョニージー", "form": "ソロ（ギター弾き語り）", "bio": "Johnny.Gです！キャロルのバラードナンバーをご紹介させていただきたいと思います！時間があれば、チューリップの曲も！"}, "Take（FamiLion）": {"read": "タケ", "form": "ソロ（ギター弾き語り）", "bio": "平成からやってきたロックバンド『FamiLion』のボーカルを務めておりますが、今回はそんな時代から懐かしい曲をみんなで歌いたいと思います！よろしくお願いします！"}, "朝はパン派": {"form": "バンド（ポップス）", "bio": "全員学生で現役の力見せちゃいます！演奏する側も観る側も全力で楽しめる、アットホームで最高にハッピーなステージをお楽しみに！"}};
 
 (function(){
   const $ = (s)=>document.querySelector(s);
@@ -413,13 +418,13 @@ const TIMETABLE = {
         tt.textContent=row.time;
         if(row.dur){ const sm=document.createElement('small'); sm.textContent='('+row.dur+')'; tt.appendChild(document.createTextNode(' ')); tt.appendChild(sm); }
         const nm=slot.querySelector('.slot-name');
-        const hasDetail=!!(row.bio||row.img);
+        const info=BAND_INFO[row.name]; const hasDetail=!!(info&&(info.bio||info.img));
         if(hasDetail){
           const nb=document.createElement('button'); nb.type='button'; nb.className='name-btn';
           if(row.sub){ const sub=document.createElement('span'); sub.className='slot-sub'; sub.textContent=row.sub; nb.appendChild(sub); }
           nb.appendChild(document.createTextNode(row.name));
           const ic=document.createElement('span'); ic.className='detail-ic'; ic.textContent='＋'; nb.appendChild(ic);
-          nb.addEventListener('click',()=>openBand(row));
+          nb.addEventListener('click',()=>openBand(row.name));
           nm.appendChild(nb);
         } else {
           if(row.sub){ const sub=document.createElement('span'); sub.className='slot-sub'; sub.textContent=row.sub; nm.appendChild(sub); }
@@ -486,12 +491,14 @@ const TIMETABLE = {
 
   /* ---- バンド紹介ポップアップ ---- */
   const bandModal=$('#bandModal');
-  function openBand(row){
-    $('#bmSub').textContent=row.sub||'';
-    $('#bmName').textContent=row.name;
-    $('#bmBio').textContent=row.bio||'';
+  function openBand(name){
+    const info=BAND_INFO[name]||{};
+    $('#bmSub').textContent=info.form||'';
+    $('#bmName').textContent=name;
+    $('#bmRead').textContent=info.read||'';
+    $('#bmBio').textContent=info.bio||'';
     const wrap=$('#bmImgWrap'), img=$('#bmImg');
-    if(row.img){ img.src=row.img; img.alt=row.name; wrap.classList.remove('empty'); }
+    if(info.img){ img.src=info.img; img.alt=name; wrap.classList.remove('empty'); }
     else { img.removeAttribute('src'); wrap.classList.add('empty'); }
     if(bandModal){ bandModal.hidden=false; document.body.classList.add('modal-open'); }
   }
