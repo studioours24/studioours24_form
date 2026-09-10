@@ -185,9 +185,9 @@ body{font-family:var(--font-body);color:var(--text-primary);background:var(--bg-
 @keyframes bmRise{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
 .bm-close{position:absolute;top:0.6rem;right:0.6rem;z-index:2;width:2.2rem;height:2.2rem;display:flex;align-items:center;justify-content:center;font-size:1.5rem;line-height:1;color:var(--text-primary);background:rgba(12,8,3,0.6);border:1px solid var(--bg-card-border);border-radius:50%;cursor:pointer;}
 .bm-close:hover{background:rgba(12,8,3,0.95);color:var(--accent-gold);}
-.bm-imgwrap{width:100%;aspect-ratio:16/10;overflow:hidden;border-radius:var(--radius-xl) var(--radius-xl) 0 0;background:#0c0803;}
-.bm-imgwrap.empty{display:none;}
-.bm-imgwrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.bm-gallery{display:flex;flex-direction:column;gap:3px;overflow:hidden;border-radius:var(--radius-xl) var(--radius-xl) 0 0;background:#0c0803;}
+.bm-gallery.empty{display:none;}
+.bm-gallery img{width:100%;height:auto;display:block;}
 .bm-body{padding:1.5rem 1.5rem 1.8rem;}
 .bm-sub{font-family:var(--font-display);font-size:0.72rem;font-weight:800;letter-spacing:0.08em;color:var(--accent-secondary);text-transform:uppercase;margin-bottom:0.25rem;}
 .bm-sub:empty{display:none;}
@@ -277,7 +277,7 @@ body.modal-open{overflow:hidden;}
     <div class="bm-backdrop" data-close></div>
     <div class="bm-card" role="dialog" aria-modal="true" aria-labelledby="bmName">
       <button class="bm-close" type="button" data-close aria-label="閉じる">×</button>
-      <div class="bm-imgwrap" id="bmImgWrap"><img id="bmImg" alt=""></div>
+      <div class="bm-gallery" id="bmGallery"></div>
       <div class="bm-body">
         <p class="bm-sub" id="bmSub"></p>
         <h3 class="bm-name" id="bmName"></h3>
@@ -328,7 +328,7 @@ const TIMETABLE = {
   ],
 };
 
-const BAND_INFO = {"Rough ours": {"read": "ラフアワーズ", "form": "バンド（ジャズ）", "bio": "こんにちは！ Rough Oursです。ボーカル、トランペット、ピアノ、ベース、ドラムの男女5人のバンドです。jazzを中心にこの地で活動しています。\n\n今回は何処かで聴いたことのあるような昭和歌謡、ボサノバ、サンバにジャズと色々なジャンルの曲を演りますのでお楽しみに😊\n\nそれと宣伝なんですが、12月13日(日)に狭山市のライブハウス シリスタで単独ライブを行います。こちらもお待ちしておりまーす😊"}, "Aloha・Nonbase": {"read": "アロハ・ノンベース", "form": "バンド（ハワイアン）", "bio": "2023年8月にバンド結成、メンバー5名！皆、高齢ですが、楽しくパワフルにLIVE等で活動しています。"}, "HOLOHOLO": {"read": "ホロホロ", "form": "デュオ（弾き語り）", "bio": "三線、ウクレレ、ギターでお届けする弾き語りデュオです。誰もが知っているあの名曲や、「これ、聴いたことある！」というお馴染みのメロディをお届けします。さらに、「えっ！この曲を三線で！？」というちょっとビックリなアレンジも！入間川ニコニコ・テラスで結成した私たちの演奏を、どうぞお楽しみください。"}, "Autumn Sky": {"read": "オータムスカイ", "form": "バンド（ポップス）", "bio": "StudioOurs24様から今回のイベントをご紹介いただき、音楽教室で急遽結成した今秋限定の急造バンドです。変わりやすいと言われる秋の空のように担当パートを変えながら演奏します！"}, "Naughty Boys": {"read": "ノーティーボーイズ", "form": "デュオ（ギター弾き語り）", "bio": "入間川七夕祭りをきっかけに結成した、弾き語りギター・デュオです。ビートルズ、モンキーズ、エリック・クラプトンなど、往年の洋楽の名曲を中心に、懐かしくも心躍るナンバーをお届けします！ギター2本と歌声で、あの頃の音楽をもう一度！"}, "いるバルず": {"form": "バンド（ポップス）", "bio": "入間市商工会バンドです！誰もが口ずさめる昭和ポップスをお届けします！ただいま絶賛コールドスリープ中につき練習不足…当日は「半解凍」のまま全力で頑張ります！"}, "ドキドキきどちゃん": {"form": "ソロ（ピアノ弾き語り）", "bio": "日々、笑顔でいることがモットーで、唄うことが大好きです🎵 皆様の心に少しでも残るように精一杯唄わせていただきま〜す😄"}, "狭山ジャズサークル": {"form": "バンド（ジャズ）", "bio": "昨年春に結成し、新たなメンバーや子どもたちも加わり、世代を超えて楽しくジャズを演奏しています。今回、出演のお話をいただき、「みんなで出たい！」と気持ちが一致。急ピッチで練習をしてきました！世代を超えた仲間たちのジャズを、ぜひお楽しみください♪"}, "ROW GUNS 1/4": {"read": "ロウガンズ ヨンブンノイチ", "form": "ソロヴォーカル", "bio": "今回はバンド活動を離れ、初めてソロでJ-POPを唄います！"}, "Johnny.G": {"read": "ジョニージー", "form": "ソロ（ギター弾き語り）", "bio": "Johnny.Gです！キャロルのバラードナンバーをご紹介させていただきたいと思います！時間があれば、チューリップの曲も！"}, "Take（FamiLion）": {"read": "タケ", "form": "ソロ（ギター弾き語り）", "bio": "平成からやってきたロックバンド『FamiLion』のボーカルを務めておりますが、今回はそんな時代から懐かしい曲をみんなで歌いたいと思います！よろしくお願いします！"}, "朝はパン派": {"form": "バンド（ポップス）", "bio": "全員学生で現役の力見せちゃいます！演奏する側も観る側も全力で楽しめる、アットホームで最高にハッピーなステージをお楽しみに！"}};
+const BAND_INFO = {"Rough ours": {"read": "ラフアワーズ", "form": "バンド（ジャズ）", "bio": "こんにちは！ Rough Oursです。ボーカル、トランペット、ピアノ、ベース、ドラムの男女5人のバンドです。jazzを中心にこの地で活動しています。\n\n今回は何処かで聴いたことのあるような昭和歌謡、ボサノバ、サンバにジャズと色々なジャンルの曲を演りますのでお楽しみに😊\n\nそれと宣伝なんですが、12月13日(日)に狭山市のライブハウス シリスタで単独ライブを行います。こちらもお待ちしておりまーす😊", "imgs": ["images/bands/rough-ours.png"]}, "Aloha・Nonbase": {"read": "アロハ・ノンベース", "form": "バンド（ハワイアン）", "bio": "2023年8月にバンド結成、メンバー5名！皆、高齢ですが、楽しくパワフルにLIVE等で活動しています。", "imgs": ["images/bands/aloha-nonbase-1.png", "images/bands/aloha-nonbase-2.png"]}, "HOLOHOLO": {"read": "ホロホロ", "form": "デュオ（弾き語り）", "bio": "三線、ウクレレ、ギターでお届けする弾き語りデュオです。誰もが知っているあの名曲や、「これ、聴いたことある！」というお馴染みのメロディをお届けします。さらに、「えっ！この曲を三線で！？」というちょっとビックリなアレンジも！入間川ニコニコ・テラスで結成した私たちの演奏を、どうぞお楽しみください。", "imgs": ["images/bands/holoholo.png"]}, "Autumn Sky": {"read": "オータムスカイ", "form": "バンド（ポップス）", "bio": "StudioOurs24様から今回のイベントをご紹介いただき、音楽教室で急遽結成した今秋限定の急造バンドです。変わりやすいと言われる秋の空のように担当パートを変えながら演奏します！", "imgs": ["images/bands/autumn-sky.png"]}, "Naughty Boys": {"read": "ノーティーボーイズ", "form": "デュオ（ギター弾き語り）", "bio": "入間川七夕祭りをきっかけに結成した、弾き語りギター・デュオです。ビートルズ、モンキーズ、エリック・クラプトンなど、往年の洋楽の名曲を中心に、懐かしくも心躍るナンバーをお届けします！ギター2本と歌声で、あの頃の音楽をもう一度！", "imgs": ["images/bands/naughty-boys.png"]}, "いるバルず": {"form": "バンド（ポップス）", "bio": "入間市商工会バンドです！誰もが口ずさめる昭和ポップスをお届けします！ただいま絶賛コールドスリープ中につき練習不足…当日は「半解凍」のまま全力で頑張ります！", "imgs": ["images/bands/irubaruzu.png"]}, "ドキドキきどちゃん": {"form": "ソロ（ピアノ弾き語り）", "bio": "日々、笑顔でいることがモットーで、唄うことが大好きです🎵 皆様の心に少しでも残るように精一杯唄わせていただきま〜す😄", "imgs": ["images/bands/kidochan.png"]}, "狭山ジャズサークル": {"form": "バンド（ジャズ）", "bio": "昨年春に結成し、新たなメンバーや子どもたちも加わり、世代を超えて楽しくジャズを演奏しています。今回、出演のお話をいただき、「みんなで出たい！」と気持ちが一致。急ピッチで練習をしてきました！世代を超えた仲間たちのジャズを、ぜひお楽しみください♪", "imgs": ["images/bands/sayama-jazz-1.png", "images/bands/sayama-jazz-2.png"]}, "ROW GUNS 1/4": {"read": "ロウガンズ ヨンブンノイチ", "form": "ソロヴォーカル", "bio": "今回はバンド活動を離れ、初めてソロでJ-POPを唄います！", "imgs": ["images/bands/row-guns.png"]}, "Johnny.G": {"read": "ジョニージー", "form": "ソロ（ギター弾き語り）", "bio": "Johnny.Gです！キャロルのバラードナンバーをご紹介させていただきたいと思います！時間があれば、チューリップの曲も！", "imgs": ["images/bands/johnny-g.png"]}, "Take（FamiLion）": {"read": "タケ", "form": "ソロ（ギター弾き語り）", "bio": "平成からやってきたロックバンド『FamiLion』のボーカルを務めておりますが、今回はそんな時代から懐かしい曲をみんなで歌いたいと思います！よろしくお願いします！", "imgs": ["images/bands/take-familion.png"]}, "朝はパン派": {"form": "バンド（ポップス）", "bio": "全員学生で現役の力見せちゃいます！演奏する側も観る側も全力で楽しめる、アットホームで最高にハッピーなステージをお楽しみに！", "imgs": ["images/bands/asa-pan.png"]}};
 
 (function(){
   const $ = (s)=>document.querySelector(s);
@@ -418,7 +418,7 @@ const BAND_INFO = {"Rough ours": {"read": "ラフアワーズ", "form": "バン�
         tt.textContent=row.time;
         if(row.dur){ const sm=document.createElement('small'); sm.textContent='('+row.dur+')'; tt.appendChild(document.createTextNode(' ')); tt.appendChild(sm); }
         const nm=slot.querySelector('.slot-name');
-        const info=BAND_INFO[row.name]; const hasDetail=!!(info&&(info.bio||info.img));
+        const info=BAND_INFO[row.name]; const hasDetail=!!(info&&(info.bio||info.img||(info.imgs&&info.imgs.length)));
         if(hasDetail){
           const nb=document.createElement('button'); nb.type='button'; nb.className='name-btn';
           if(row.sub){ const sub=document.createElement('span'); sub.className='slot-sub'; sub.textContent=row.sub; nb.appendChild(sub); }
@@ -497,9 +497,10 @@ const BAND_INFO = {"Rough ours": {"read": "ラフアワーズ", "form": "バン�
     $('#bmName').textContent=name;
     $('#bmRead').textContent=info.read||'';
     $('#bmBio').textContent=info.bio||'';
-    const wrap=$('#bmImgWrap'), img=$('#bmImg');
-    if(info.img){ img.src=info.img; img.alt=name; wrap.classList.remove('empty'); }
-    else { img.removeAttribute('src'); wrap.classList.add('empty'); }
+    const gal=$('#bmGallery'); gal.innerHTML='';
+    const imgs=info.imgs||(info.img?[info.img]:[]);
+    imgs.forEach(src=>{ const im=document.createElement('img'); im.src=src; im.alt=name; im.loading='lazy'; gal.appendChild(im); });
+    gal.classList.toggle('empty', imgs.length===0);
     if(bandModal){ bandModal.hidden=false; document.body.classList.add('modal-open'); }
   }
   function closeBand(){ if(bandModal){ bandModal.hidden=true; document.body.classList.remove('modal-open'); } }
