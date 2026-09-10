@@ -169,6 +169,33 @@ body{font-family:var(--font-body);color:var(--text-primary);background:var(--bg-
   .hero-bg,.hero-beams::before,.hero-beams::after,.hero-particles i,.hero-eq i,.hero-eyebrow,.anim-in,.marquee-track{animation:none!important;}
   .hero-particles,.hero-eq{display:none;}
 }
+/* ===== バンド名クリック（詳細あり） ===== */
+.name-btn{display:inline;font:inherit;color:var(--accent-gold);background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:left;font-weight:700;text-decoration:underline;text-decoration-color:rgba(251,191,36,0.45);text-underline-offset:3px;}
+.name-btn:hover{text-decoration-color:var(--accent-gold);}
+.detail-ic{display:inline-flex;align-items:center;justify-content:center;width:1.2em;height:1.2em;margin-left:0.45em;font-size:0.7em;font-weight:800;color:#3a1c00;background:var(--accent-gold);border-radius:50%;vertical-align:middle;line-height:1;}
+.slot.now .name-btn{color:#3a1c00;text-decoration-color:rgba(58,28,0,0.5);}
+.slot.now .detail-ic{background:#3a1c00;color:var(--accent-gold);}
+
+/* ===== バンド紹介ポップアップ ===== */
+.band-modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:1.2rem;}
+.band-modal[hidden]{display:none;}
+.bm-backdrop{position:absolute;inset:0;background:rgba(5,3,1,0.78);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:bmFade .25s ease both;}
+.bm-card{position:relative;z-index:1;width:100%;max-width:440px;max-height:88vh;overflow-y:auto;background:linear-gradient(180deg,#1a1206,#120c05);border:1px solid rgba(251,191,36,0.25);border-radius:var(--radius-xl);box-shadow:0 24px 70px rgba(0,0,0,0.6);animation:bmRise .3s cubic-bezier(.22,1,.36,1) both;}
+@keyframes bmFade{from{opacity:0}to{opacity:1}}
+@keyframes bmRise{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.bm-close{position:absolute;top:0.6rem;right:0.6rem;z-index:2;width:2.2rem;height:2.2rem;display:flex;align-items:center;justify-content:center;font-size:1.5rem;line-height:1;color:var(--text-primary);background:rgba(12,8,3,0.6);border:1px solid var(--bg-card-border);border-radius:50%;cursor:pointer;}
+.bm-close:hover{background:rgba(12,8,3,0.95);color:var(--accent-gold);}
+.bm-imgwrap{width:100%;aspect-ratio:16/10;overflow:hidden;border-radius:var(--radius-xl) var(--radius-xl) 0 0;background:#0c0803;}
+.bm-imgwrap.empty{display:none;}
+.bm-imgwrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.bm-body{padding:1.5rem 1.5rem 1.8rem;}
+.bm-sub{font-family:var(--font-display);font-size:0.72rem;font-weight:800;letter-spacing:0.08em;color:var(--accent-secondary);text-transform:uppercase;margin-bottom:0.25rem;}
+.bm-sub:empty{display:none;}
+.bm-name{font-family:var(--font-display);font-size:clamp(1.3rem,5vw,1.7rem);font-weight:900;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;line-height:1.2;}
+.bm-bio{font-size:0.95rem;color:var(--text-secondary);line-height:1.9;white-space:pre-wrap;}
+.bm-bio:empty::before{content:'紹介文は準備中です';color:var(--text-dim);}
+body.modal-open{overflow:hidden;}
+@media(prefers-reduced-motion:reduce){.bm-backdrop,.bm-card{animation:none;}}
 </style>
 </head>
 <body>
@@ -242,6 +269,20 @@ body{font-family:var(--font-body);color:var(--text-primary);background:var(--bg-
   <footer class="footer">
     <div class="container"><p>&copy; 2026 Studio Ours24. All rights reserved.</p></div>
   </footer>
+
+  <!-- BAND MODAL -->
+  <div class="band-modal" id="bandModal" hidden>
+    <div class="bm-backdrop" data-close></div>
+    <div class="bm-card" role="dialog" aria-modal="true" aria-labelledby="bmName">
+      <button class="bm-close" type="button" data-close aria-label="閉じる">×</button>
+      <div class="bm-imgwrap" id="bmImgWrap"><img id="bmImg" alt=""></div>
+      <div class="bm-body">
+        <p class="bm-sub" id="bmSub"></p>
+        <h3 class="bm-name" id="bmName"></h3>
+        <p class="bm-bio" id="bmBio"></p>
+      </div>
+    </div>
+  </div>
 
 <script>
 /* =====================================================================
@@ -372,8 +413,18 @@ const TIMETABLE = {
         tt.textContent=row.time;
         if(row.dur){ const sm=document.createElement('small'); sm.textContent='('+row.dur+')'; tt.appendChild(document.createTextNode(' ')); tt.appendChild(sm); }
         const nm=slot.querySelector('.slot-name');
-        if(row.sub){ const sub=document.createElement('span'); sub.className='slot-sub'; sub.textContent=row.sub; nm.appendChild(sub); }
-        nm.appendChild(document.createTextNode(row.name));
+        const hasDetail=!!(row.bio||row.img);
+        if(hasDetail){
+          const nb=document.createElement('button'); nb.type='button'; nb.className='name-btn';
+          if(row.sub){ const sub=document.createElement('span'); sub.className='slot-sub'; sub.textContent=row.sub; nb.appendChild(sub); }
+          nb.appendChild(document.createTextNode(row.name));
+          const ic=document.createElement('span'); ic.className='detail-ic'; ic.textContent='＋'; nb.appendChild(ic);
+          nb.addEventListener('click',()=>openBand(row));
+          nm.appendChild(nb);
+        } else {
+          if(row.sub){ const sub=document.createElement('span'); sub.className='slot-sub'; sub.textContent=row.sub; nm.appendChild(sub); }
+          nm.appendChild(document.createTextNode(row.name));
+        }
         list.appendChild(slot);
         const parts=row.time.split('〜');
         const startMs=Date.parse(day.date+'T'+parts[0]+':00+09:00');
@@ -432,6 +483,23 @@ const TIMETABLE = {
     }
     update(); setInterval(update,15000);
   })();
+
+  /* ---- バンド紹介ポップアップ ---- */
+  const bandModal=$('#bandModal');
+  function openBand(row){
+    $('#bmSub').textContent=row.sub||'';
+    $('#bmName').textContent=row.name;
+    $('#bmBio').textContent=row.bio||'';
+    const wrap=$('#bmImgWrap'), img=$('#bmImg');
+    if(row.img){ img.src=row.img; img.alt=row.name; wrap.classList.remove('empty'); }
+    else { img.removeAttribute('src'); wrap.classList.add('empty'); }
+    if(bandModal){ bandModal.hidden=false; document.body.classList.add('modal-open'); }
+  }
+  function closeBand(){ if(bandModal){ bandModal.hidden=true; document.body.classList.remove('modal-open'); } }
+  if(bandModal){
+    bandModal.addEventListener('click',(e)=>{ if(e.target.hasAttribute('data-close')) closeBand(); });
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape' && !bandModal.hidden) closeBand(); });
+  }
 })();
 </script>
 </body>
