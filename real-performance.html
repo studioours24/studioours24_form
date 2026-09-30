@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>夢のバンドフェス2027 Ours24 Real Performance - 出演者募集</title>
+<meta name="description" content="夢のバンドフェス2027 Ours24 Real Performance 出演者募集フォーム。2027年1月9日(土)開催。バンド募集（3名以上）。申込締切10月13日。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* RP専用の微調整 */
+.fee-matrix td, .fee-matrix th{ text-align:center; }
+.fee-matrix .fee-row-label{ text-align:left; }
+.price-sub{ color:#ea580c; }
+</style>
+</head>
+<body>
+
+  <!-- ===== HERO ===== -->
+  <header class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <p class="hero-date">2027.1.9 <span class="hero-date-sep">SAT</span></p>
+      <h1 class="hero-title">
+        <span class="hero-title-jp">夢のバンドフェス</span>
+        <span class="hero-title-year">2027</span>
+      </h1>
+      <p class="hero-subtitle">Ours24 Real Performance</p>
+      <div class="hero-badges">
+        <span class="badge">BAND</span>
+        <span class="badge badge-accent">出演者募集</span>
+      </div>
+    </div>
+    <div class="hero-scroll"><span>SCROLL</span><div class="hero-scroll-line"></div></div>
+  </header>
+
+  <!-- ===== EVENT INFO ===== -->
+  <section class="event-info" id="event-info">
+    <div class="container">
+      <h2 class="section-title">募集要項</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <h3>DATE</h3>
+          <p class="info-main">2027年1月9日(土)</p>
+          <p class="info-sub">10:00 スタート</p>
+        </div>
+        <div class="info-card info-card--fee">
+          <div class="info-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <h3>FEE<small class="fee-unit">（税込/人）</small></h3>
+          <table class="fee-matrix">
+            <tbody>
+              <tr><td class="fee-row-label">Studio会員</td><td>¥2,500</td></tr>
+              <tr><td class="fee-row-label">7月RP・FL出演者</td><td>¥3,000</td></tr>
+              <tr><td class="fee-row-label">ビジター</td><td>¥3,500</td></tr>
+            </tbody>
+          </table>
+          <p class="fee-note">★ 高校生以下は1人につき ¥500 引き</p>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h3>CAPACITY</h3>
+          <p class="info-main">13組</p>
+          <p class="info-sub note">申込締切 10月13日 ／ 定員超過の場合は締切後に抽選</p>
+        </div>
+      </div>
+      <p class="form-note" style="margin-top:1.5rem;">出演は<strong>バンドのみ（3名以上）</strong>が対象です。</p>
+    </div>
+  </section>
+
+  <!-- ===== APPLICATION FORM ===== -->
+  <section class="form-section" id="application">
+    <div class="container">
+      <h2 class="section-title">出演申し込みフォーム</h2>
+      <p class="form-note">すべての必須項目（<span class="required-mark">*</span>）をご入力ください。<br>送信後、ご入力のメールアドレスに確認メールが届きます。メール内のリンクで申込が確定します。</p>
+
+      <form id="rpForm" novalidate>
+
+        <!-- 01 グループ情報 -->
+        <div class="form-card">
+          <div class="form-card-header"><span class="form-card-number">01</span><h3>グループ情報</h3></div>
+          <div class="form-group">
+            <label class="form-label" for="groupName">バンド名 <span class="required-mark">*</span></label>
+            <input type="text" id="groupName" name="groupName" class="form-input" placeholder="例: The Rockers" required>
+            <p class="error-message" id="error-groupName"></p>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="memberCount">人数（3名以上） <span class="required-mark">*</span></label>
+            <input type="number" id="memberCount" name="memberCount" class="form-input form-input--short" min="3" max="30" placeholder="例: 5" required>
+            <p class="error-message" id="error-memberCount"></p>
+          </div>
+        </div>
+
+        <!-- 02 参加費区分 -->
+        <div class="form-card">
+          <div class="form-card-header"><span class="form-card-number">02</span><h3>参加費区分</h3></div>
+          <div class="form-group">
+            <label class="form-label">区分を選択してください（1人あたりの金額） <span class="required-mark">*</span></label>
+            <div class="radio-group" id="feeCategory">
+              <label class="radio-pill" for="fee-member">
+                <input type="radio" id="fee-member" name="feeCategory" value="Studio会員" data-price="2500" required>
+                <span>Studio会員（¥2,500/人）</span>
+              </label>
+              <label class="radio-pill" for="fee-past">
+                <input type="radio" id="fee-past" name="feeCategory" value="7月RP・FL出演者" data-price="3000">
+                <span>7月RP・FL出演者（¥3,000/人）</span>
+              </label>
+              <label class="radio-pill" for="fee-visitor">
+                <input type="radio" id="fee-visitor" name="feeCategory" value="ビジター" data-price="3500">
+                <span>ビジター（¥3,500/人）</span>
+              </label>
+            </div>
+            <p class="form-hint">「7月RP・FL出演者」＝2026年7月のReal Performance／Friendly Live に出演された方</p>
+            <p class="error-message" id="error-feeCategory"></p>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="minorCount">うち高校生以下の人数（1人につき ¥500 引き）</label>
+            <input type="number" id="minorCount" name="minorCount" class="form-input form-input--short" min="0" max="30" value="0" placeholder="0">
+            <p class="form-hint">いない場合は 0 のままで構いません。</p>
+            <p class="error-message" id="error-minorCount"></p>
+          </div>
+        </div>
+
+        <!-- 03 代表者情報 -->
+        <div class="form-card">
+          <div class="form-card-header"><span class="form-card-number">03</span><h3>代表者情報</h3></div>
+          <div class="form-group">
+            <label class="form-label" for="representativeName">代表者氏名 <span class="required-mark">*</span></label>
+            <input type="text" id="representativeName" name="representativeName" class="form-input" placeholder="例: 山田 太郎" required>
+            <p class="error-message" id="error-representativeName"></p>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">代表者メールアドレス <span class="required-mark">*</span></label>
+            <input type="email" id="email" name="email" class="form-input" placeholder="例: example@email.com" required>
+            <p class="form-hint">※ 確認メールをお送りします。有効なメールアドレスをご入力ください。</p>
+            <p class="error-message" id="error-email"></p>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">代表者電話番号 <span class="required-mark">*</span></label>
+            <input type="tel" id="phone" name="phone" class="form-input" placeholder="例: 090-1234-5678" required>
+            <p class="error-message" id="error-phone"></p>
+          </div>
+        </div>
+
+        <!-- 04 出演希望 -->
+        <div class="form-card">
+          <div class="form-card-header"><span class="form-card-number">04</span><h3>出演希望</h3></div>
+          <div class="form-group">
+            <label class="form-label">希望出演時間帯（第1希望） <span class="required-mark">*</span></label>
+            <div class="radio-group" id="preferredTimeSlot1">
+              <label class="radio-pill" for="slot1-morning"><input type="radio" id="slot1-morning" name="preferredTimeSlot1" value="午前中" required><span>午前中</span></label>
+              <label class="radio-pill" for="slot1-afternoon"><input type="radio" id="slot1-afternoon" name="preferredTimeSlot1" value="昼〜夕方"><span>昼〜夕方</span></label>
+              <label class="radio-pill" for="slot1-evening"><input type="radio" id="slot1-evening" name="preferredTimeSlot1" value="夕方〜夜"><span>夕方〜夜</span></label>
+              <label class="radio-pill" for="slot1-any"><input type="radio" id="slot1-any" name="preferredTimeSlot1" value="いつでも可"><span>いつでも可</span></label>
+            </div>
+            <p class="error-message" id="error-preferredTimeSlot1"></p>
+          </div>
+          <div class="form-group">
+            <label class="form-label">希望出演時間帯（第2希望）</label>
+            <div class="radio-group" id="preferredTimeSlot2">
+              <label class="radio-pill" for="slot2-morning"><input type="radio" id="slot2-morning" name="preferredTimeSlot2" value="午前中"><span>午前中</span></label>
+              <label class="radio-pill" for="slot2-afternoon"><input type="radio" id="slot2-afternoon" name="preferredTimeSlot2" value="昼〜夕方"><span>昼〜夕方</span></label>
+              <label class="radio-pill" for="slot2-evening"><input type="radio" id="slot2-evening" name="preferredTimeSlot2" value="夕方〜夜"><span>夕方〜夜</span></label>
+              <label class="radio-pill" for="slot2-any"><input type="radio" id="slot2-any" name="preferredTimeSlot2" value="いつでも可"><span>いつでも可</span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 05 その他 -->
+        <div class="form-card">
+          <div class="form-card-header"><span class="form-card-number">05</span><h3>その他</h3></div>
+          <div class="form-group">
+            <label class="form-label" for="remarks">備考</label>
+            <textarea id="remarks" name="remarks" class="form-input form-textarea" rows="4" placeholder="機材の持ち込み希望、その他ご要望があればご記入ください"></textarea>
+          </div>
+        </div>
+
+        <!-- 06 参加費 -->
+        <div class="form-card form-card--price" id="section-price">
+          <div class="form-card-header"><span class="form-card-number">¥</span><h3>参加費（税込）</h3></div>
+          <div class="price-display">
+            <div class="price-breakdown" id="priceBreakdown">
+              <p class="price-line" id="priceLine">区分と人数を入力すると自動計算されます</p>
+            </div>
+            <div class="price-total">
+              <span class="price-total-label">合計</span>
+              <span class="price-total-amount" id="priceTotal">—</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span class="btn-submit-text">申し込みを送信する</span>
+          <span class="btn-submit-loading" style="display:none;"><span class="spinner"></span>送信中...</span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== COMPLETION OVERLAY ===== -->
+  <div class="overlay" id="completionOverlay" style="display:none;">
+    <div class="overlay-content">
+      <div class="overlay-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+      <h2>確認メールを送信しました</h2>
+      <p class="overlay-email" id="completionEmail"></p>
+      <p>上記のメールアドレスに確認メールをお送りしました。</p>
+      <p>メール内のリンクをクリックして、お申し込みを確定してください。</p>
+      <div class="overlay-notice">
+        <p>確認リンクの有効期限は <strong>48時間</strong> です。</p>
+        <p>メールが届かない場合は、迷惑メールフォルダをご確認ください。</p>
+      </div>
+      <p class="overlay-receipt" id="completionReceiptWrap" style="display:none;">受付番号: <strong id="completionReceipt"></strong></p>
+    </div>
+  </div>
+
+  <footer class="footer"><div class="container"><p>&copy; 2027 Studio Ours24. All rights reserved.</p></div></footer>
+
+<script>
+(function(){
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbySXR6ThrZVRaBEBClEXRF7SXIwOlahXql8AsMD4lOvs736n6xWdZFhPIvBDitlHKQZ/exec';
+  const $ = (id)=>document.getElementById(id);
+  const yen = (n)=>'¥'+Number(n).toLocaleString();
+
+  function getUnit(){ const el=document.querySelector('input[name="feeCategory"]:checked'); return el?Number(el.dataset.price):0; }
+  function calc(){
+    const unit=getUnit();
+    const n=parseInt($('memberCount').value,10)||0;
+    const h=parseInt($('minorCount').value,10)||0;
+    const cat=document.querySelector('input[name="feeCategory"]:checked');
+    const line=$('priceLine'); const total=$('priceTotal'); const bd=$('priceBreakdown');
+    if(!unit || !n){ bd.innerHTML='<p class="price-line" id="priceLine">区分と人数を入力すると自動計算されます</p>'; total.textContent='—'; return; }
+    const base=unit*n;
+    const hh=Math.min(h,n);
+    const disc=500*hh;
+    const sum=Math.max(base-disc,0);
+    let html='<p class="price-line">'+cat.value+' '+yen(unit)+' × '+n+'名 = '+yen(base)+'</p>';
+    if(hh>0){ html+='<p class="price-line price-sub">高校生以下 '+hh+'名 − '+yen(500)+' × '+hh+'名 = −'+yen(disc)+'</p>'; }
+    bd.innerHTML=html;
+    total.textContent=yen(sum);
+    return {unit:unit, total:sum};
+  }
+  ['change','input'].forEach(ev=>{
+    document.querySelectorAll('input[name="feeCategory"]').forEach(el=>el.addEventListener(ev,calc));
+    $('memberCount').addEventListener(ev,calc);
+    $('minorCount').addEventListener(ev,calc);
+  });
+
+  function setErr(id,msg){ const e=$('error-'+id); if(e){ e.textContent=msg||''; } }
+  function clearErrs(){ document.querySelectorAll('.error-message').forEach(e=>e.textContent=''); }
+
+  function validate(){
+    clearErrs(); let ok=true; let first=null;
+    const req=(id,msg)=>{ const v=($(id).value||'').trim(); if(!v){ setErr(id,msg); ok=false; first=first||$(id); } };
+    req('groupName','バンド名を入力してください');
+    const n=parseInt($('memberCount').value,10);
+    if(!n){ setErr('memberCount','人数を入力してください'); ok=false; first=first||$('memberCount'); }
+    else if(n<3){ setErr('memberCount','バンドは3名以上でお申し込みください'); ok=false; first=first||$('memberCount'); }
+    if(!document.querySelector('input[name="feeCategory"]:checked')){ setErr('feeCategory','区分を選択してください'); ok=false; }
+    const h=parseInt($('minorCount').value,10)||0;
+    if(h<0){ setErr('minorCount','0以上で入力してください'); ok=false; }
+    else if(n && h>n){ setErr('minorCount','人数を超えています'); ok=false; first=first||$('minorCount'); }
+    req('representativeName','代表者氏名を入力してください');
+    const email=($('email').value||'').trim();
+    if(!email){ setErr('email','メールアドレスを入力してください'); ok=false; first=first||$('email'); }
+    else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ setErr('email','メールアドレスの形式が正しくありません'); ok=false; first=first||$('email'); }
+    req('phone','電話番号を入力してください');
+    if(!document.querySelector('input[name="preferredTimeSlot1"]:checked')){ setErr('preferredTimeSlot1','第1希望を選択してください'); ok=false; }
+    if(first){ first.scrollIntoView({behavior:'smooth',block:'center'}); }
+    return ok;
+  }
+
+  const form=$('rpForm');
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    if(!validate()) return;
+    const c=calc();
+    const btn=$('submitBtn');
+    btn.disabled=true;
+    btn.querySelector('.btn-submit-text').style.display='none';
+    btn.querySelector('.btn-submit-loading').style.display='inline-flex';
+
+    const slot2El=document.querySelector('input[name="preferredTimeSlot2"]:checked');
+    const payload={
+      formType:'Real Performance出演者募集',
+      groupName:$('groupName').value.trim(),
+      memberCount:parseInt($('memberCount').value,10),
+      minorCount:parseInt($('minorCount').value,10)||0,
+      feeCategory:document.querySelector('input[name="feeCategory"]:checked').value,
+      unitPrice:c.unit,
+      totalPrice:c.total,
+      representativeName:$('representativeName').value.trim(),
+      email:$('email').value.trim(),
+      phone:$('phone').value.trim(),
+      preferredTimeSlot1:document.querySelector('input[name="preferredTimeSlot1"]:checked').value,
+      preferredTimeSlot2:slot2El?slot2El.value:'',
+      remarks:$('remarks').value.trim()
+    };
+
+    let receipt='';
+    try{
+      const res=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+      try{ const j=await res.json(); if(j&&j.receiptNumber) receipt=j.receiptNumber; }catch(_){}
+    }catch(err){
+      // CORS等で失敗した場合は no-cors で再送（応答は読めない）
+      try{ await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}); }
+      catch(err2){
+        alert('送信に失敗しました。通信環境をご確認のうえ、もう一度お試しください。');
+        btn.disabled=false; btn.querySelector('.btn-submit-text').style.display='inline'; btn.querySelector('.btn-submit-loading').style.display='none';
+        return;
+      }
+    }
+    $('completionEmail').textContent=payload.email;
+    if(receipt){ $('completionReceipt').textContent=receipt; $('completionReceiptWrap').style.display='block'; }
+    $('completionOverlay').style.display='flex';
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+})();
+</script>
+</body>
+</html>
