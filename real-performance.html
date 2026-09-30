@@ -43,6 +43,18 @@
 .count-row .cr-label{font-weight:700;color:var(--text-primary);}
 .count-row .cr-label small{display:block;font-weight:500;font-size:0.8rem;color:var(--text-secondary);}
 .count-row input{width:5.5rem;flex:none;}
+/* ジャンル その他入力 */
+#genreOtherWrap{margin-top:0.75rem;}
+/* 確認画面 */
+.confirm-list{text-align:left;margin:1.25rem 0;border-top:1px solid var(--bg-card-border);}
+.confirm-list div{display:flex;gap:1rem;padding:0.6rem 0;border-bottom:1px solid var(--bg-card-border);font-size:0.92rem;}
+.confirm-list dt{flex:0 0 7.5rem;color:var(--text-secondary);}
+.confirm-list dd{flex:1;margin:0;color:var(--text-primary);word-break:break-word;white-space:pre-wrap;}
+.confirm-total{font-size:1.4rem;font-weight:900;color:#7dd3fc;}
+.confirm-actions{display:flex;gap:0.75rem;margin-top:1rem;}
+.confirm-actions button{flex:1;}
+.btn-back{padding:1rem;border-radius:12px;border:1px solid var(--bg-card-border);background:transparent;color:var(--text-primary);font-weight:700;font-size:1rem;cursor:pointer;}
+.overlay-content.confirm-box{max-height:88vh;overflow-y:auto;}
 </style>
 </head>
 <body>
@@ -115,8 +127,18 @@
             <p class="error-message" id="error-groupName"></p>
           </div>
           <div class="form-group">
-            <label class="form-label" for="genre">ジャンル <span class="required-mark">*</span></label>
-            <input type="text" id="genre" name="genre" class="form-input" placeholder="例: ジャズ / ポップス / ロック / 弾き語り など" required>
+            <label class="form-label">ジャンル <span class="required-mark">*</span></label>
+            <div class="radio-group" id="genreGroup">
+              <label class="radio-pill"><input type="radio" name="genre" value="ジャズ"><span>ジャズ</span></label>
+              <label class="radio-pill"><input type="radio" name="genre" value="ポップス"><span>ポップス</span></label>
+              <label class="radio-pill"><input type="radio" name="genre" value="ロック"><span>ロック</span></label>
+              <label class="radio-pill"><input type="radio" name="genre" value="弾き語り"><span>弾き語り</span></label>
+              <label class="radio-pill"><input type="radio" name="genre" value="ハワイアン"><span>ハワイアン</span></label>
+              <label class="radio-pill"><input type="radio" name="genre" value="その他"><span>その他</span></label>
+            </div>
+            <div id="genreOtherWrap" style="display:none;">
+              <input type="text" id="genreOther" class="form-input" placeholder="ジャンルを入力（例: アニソン、ブルース など）">
+            </div>
             <p class="error-message" id="error-genre"></p>
           </div>
         </div>
@@ -241,6 +263,19 @@
     </div>
   </div>
 
+  <!-- ===== CONFIRM OVERLAY ===== -->
+  <div class="overlay" id="confirmOverlay" style="display:none;">
+    <div class="overlay-content confirm-box">
+      <h2>入力内容の確認</h2>
+      <p>以下の内容で送信します。よろしければ「この内容で送信」を押してください。</p>
+      <dl class="confirm-list" id="confirmList"></dl>
+      <div class="confirm-actions">
+        <button type="button" class="btn-back" id="confirmBack">修正する</button>
+        <button type="button" class="btn-submit" id="confirmSend"><span class="btn-submit-text">この内容で送信</span><span class="btn-submit-loading" style="display:none;"><span class="spinner"></span>送信中...</span></button>
+      </div>
+    </div>
+  </div>
+
   <footer class="footer"><div class="container"><p>&copy; 2027 Studio Ours24. All rights reserved.</p></div></footer>
 
 <script>
@@ -278,7 +313,9 @@
   function validate(){
     clearErrs(); let ok=true; let first=null;
     if(!($('groupName').value||'').trim()){ setErr('groupName','バンド名を入力してください'); ok=false; first=first||$('groupName'); }
-    if(!($('genre').value||'').trim()){ setErr('genre','ジャンルを入力してください'); ok=false; first=first||$('genre'); }
+    const g=getGenre();
+    if(g===null){ setErr('genre','ジャンルを選択してください'); ok=false; first=first||$('genreGroup'); }
+    else if(g===''){ setErr('genre','「その他」のジャンルを入力してください'); ok=false; first=first||$('genreOther'); }
     const m=intv('cMember'), j=intv('cPast'), v=intv('cVisitor'), h=intv('minorCount');
     const total=m+j+v;
     if(total<3){ setErr('counts','区分ごとの人数を入力してください（合計3名以上）'); ok=false; first=first||$('cMember'); }
@@ -293,21 +330,28 @@
     return ok;
   }
 
-  const form=$('rpForm');
-  form.addEventListener('submit', async function(e){
-    e.preventDefault();
-    if(!validate()) return;
-    const c=calc();
-    const btn=$('submitBtn');
-    btn.disabled=true;
-    btn.querySelector('.btn-submit-text').style.display='none';
-    btn.querySelector('.btn-submit-loading').style.display='inline-flex';
+  function getGenre(){
+    const el=document.querySelector('input[name="genre"]:checked');
+    if(!el) return null;
+    if(el.value==='その他') return ($('genreOther').value||'').trim();
+    return el.value;
+  }
+  document.querySelectorAll('input[name="genre"]').forEach(el=>el.addEventListener('change',()=>{
+    const other=document.querySelector('input[name="genre"]:checked').value==='その他';
+    $('genreOtherWrap').style.display=other?'block':'none';
+    if(other) $('genreOther').focus();
+  }));
 
+  function esc(t){ return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  let pending=null;
+
+  function buildPayload(){
+    const c=calc();
     const slot2El=document.querySelector('input[name="preferredTimeSlot2"]:checked');
-    const payload={
+    return {
       formType:'Real Performance出演者募集',
       groupName:$('groupName').value.trim(),
-      genre:$('genre').value.trim(),
+      genre:getGenre(),
       memberCount:c.total,
       countMember:c.m, countPast:c.j, countVisitor:c.v,
       minorCount:c.minors,
@@ -319,7 +363,42 @@
       preferredTimeSlot2:slot2El?slot2El.value:'',
       remarks:$('remarks').value.trim()
     };
+  }
 
+  function showConfirm(p){
+    const rows=[
+      ['バンド名',p.groupName],
+      ['ジャンル',p.genre],
+      ['人数',p.memberCount+'名（Studio会員'+p.countMember+'／7月RP・FL出演者'+p.countPast+'／ビジター'+p.countVisitor+'）'],
+      ['高校生以下',p.minorCount+'名'],
+      ['代表者',p.representativeName],
+      ['メール',p.email],
+      ['電話',p.phone],
+      ['希望時間帯',p.preferredTimeSlot1+(p.preferredTimeSlot2?'（第2: '+p.preferredTimeSlot2+'）':'')],
+      ['備考',p.remarks||'—']
+    ];
+    let html=rows.map(r=>'<div><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd></div>').join('');
+    html+='<div><dt>参加費合計</dt><dd class="confirm-total">'+yen(p.totalPrice)+'</dd></div>';
+    $('confirmList').innerHTML=html;
+    $('confirmOverlay').style.display='flex';
+  }
+
+  const form=$('rpForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!validate()) return;
+    pending=buildPayload();
+    showConfirm(pending);
+  });
+  $('confirmBack').addEventListener('click',()=>{ $('confirmOverlay').style.display='none'; });
+
+  $('confirmSend').addEventListener('click', async function(){
+    if(!pending) return;
+    const btn=$('confirmSend'), back=$('confirmBack');
+    btn.disabled=true; back.disabled=true;
+    btn.querySelector('.btn-submit-text').style.display='none';
+    btn.querySelector('.btn-submit-loading').style.display='inline-flex';
+    const payload=pending;
     let receipt='';
     try{
       const res=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
@@ -328,10 +407,13 @@
       try{ await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}); }
       catch(err2){
         alert('送信に失敗しました。通信環境をご確認のうえ、もう一度お試しください。');
-        btn.disabled=false; btn.querySelector('.btn-submit-text').style.display='inline'; btn.querySelector('.btn-submit-loading').style.display='none';
+        btn.disabled=false; back.disabled=false;
+        btn.querySelector('.btn-submit-text').style.display='inline';
+        btn.querySelector('.btn-submit-loading').style.display='none';
         return;
       }
     }
+    $('confirmOverlay').style.display='none';
     $('completionEmail').textContent=payload.email;
     if(receipt){ $('completionReceipt').textContent=receipt; $('completionReceiptWrap').style.display='block'; }
     $('completionOverlay').style.display='flex';
