@@ -10,10 +10,33 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-/* RP専用の微調整 */
-.fee-matrix td, .fee-matrix th{ text-align:center; }
-.fee-matrix .fee-row-label{ text-align:left; }
-.price-sub{ color:#ea580c; }
+/* ===== 冬テーマ上書き（このページのみ） ===== */
+:root{
+  --accent-primary:#38bdf8;
+  --accent-primary-glow:rgba(56,189,248,0.28);
+  --accent-secondary:#a5b4fc;
+  --accent-gradient:linear-gradient(135deg,#e0f2fe,#7dd3fc,#38bdf8,#818cf8);
+  --accent-gradient-cool:linear-gradient(135deg,#e0f2fe,#7dd3fc,#38bdf8);
+  --bg-primary:#060a13;
+}
+.hero-bg{background:
+  radial-gradient(ellipse at 18% 22%,rgba(125,211,252,0.16),transparent 55%),
+  radial-gradient(ellipse at 84% 30%,rgba(129,140,248,0.16),transparent 55%),
+  radial-gradient(ellipse at 50% 110%,rgba(224,242,254,0.08),transparent 50%),
+  var(--bg-primary) !important;}
+.badge-accent{background:rgba(56,189,248,0.12) !important;border-color:rgba(56,189,248,0.30) !important;color:#7dd3fc !important;}
+.radio-pill input:checked + span{background:rgba(56,189,248,0.14) !important;border-color:var(--accent-primary) !important;color:#7dd3fc !important;}
+.radio-card:has(input:checked){background:rgba(56,189,248,0.10) !important;border-color:var(--accent-primary) !important;box-shadow:0 0 24px var(--accent-primary-glow) !important;}
+.price-sub{color:#93c5fd;}
+/* ===== 募集要項レイアウト整列 ===== */
+.info-grid{grid-template-columns:1fr 1fr;gap:1.25rem;align-items:stretch;}
+.info-card{display:flex;flex-direction:column;}
+.info-card--fee{grid-column:1 / -1;}
+.fee-matrix{margin:0.25rem auto 0;}
+.fee-matrix td{padding:0.4rem 1.1rem;text-align:center;}
+.fee-matrix .fee-row-label{text-align:left;}
+.fee-matrix td:last-child{text-align:right;font-weight:700;}
+@media(max-width:640px){ .info-grid{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
@@ -47,23 +70,21 @@
           <p class="info-main">2027年1月9日(土)</p>
           <p class="info-sub">10:00 スタート</p>
         </div>
-        <div class="info-card info-card--fee">
-          <div class="info-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-          <h3>FEE<small class="fee-unit">（税込/人）</small></h3>
-          <table class="fee-matrix">
-            <tbody>
-              <tr><td class="fee-row-label">Studio会員</td><td>¥2,500</td></tr>
-              <tr><td class="fee-row-label">7月RP・FL出演者</td><td>¥3,000</td></tr>
-              <tr><td class="fee-row-label">ビジター</td><td>¥3,500</td></tr>
-            </tbody>
-          </table>
-          <p class="fee-note">★ 高校生以下は1人につき ¥500 引き</p>
-        </div>
         <div class="info-card">
           <div class="info-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
           <h3>CAPACITY</h3>
           <p class="info-main">13組</p>
-          <p class="info-sub note">申込締切 10月13日 ／ 定員超過の場合は締切後に抽選</p>
+          <p class="info-sub note">申込締切 10月13日<br>定員超過の場合は締切後に抽選</p>
+        </div>
+        <div class="info-card info-card--fee">
+          <div class="info-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <h3>FEE<small class="fee-unit">（税込/人）</small></h3>
+          <table class="fee-matrix"><tbody>
+            <tr><td class="fee-row-label">Studio会員</td><td>¥2,500</td></tr>
+            <tr><td class="fee-row-label">7月RP・FL出演者</td><td>¥3,000</td></tr>
+            <tr><td class="fee-row-label">ビジター</td><td>¥3,500</td></tr>
+          </tbody></table>
+          <p class="fee-note">★ 高校生以下は1人につき ¥500 引き</p>
         </div>
       </div>
       <p class="form-note" style="margin-top:1.5rem;">出演は<strong>バンドのみ（3名以上）</strong>が対象です。</p>
