@@ -56,6 +56,24 @@
 .confirm-actions button{flex:1;margin:0 !important;min-height:3.4rem;}
 .btn-back{padding:1rem;border-radius:12px;border:1px solid var(--bg-card-border);background:transparent;color:var(--text-primary);font-weight:700;font-size:1rem;cursor:pointer;}
 .overlay-content.confirm-box{max-height:88vh;overflow-y:auto;}
+/* 人数ステッパー */
+.count-row .stepper{display:flex;align-items:center;gap:0.4rem;flex:none;}
+.step-btn{width:2.6rem;height:2.6rem;border-radius:50%;border:1px solid rgba(56,189,248,0.4);background:rgba(56,189,248,0.08);color:#7dd3fc;font-size:1.3rem;font-weight:800;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
+.step-btn:active{background:rgba(56,189,248,0.25);}
+.count-row .stepper input{width:3.4rem;text-align:center;padding-left:0.3rem;padding-right:0.3rem;-moz-appearance:textfield;}
+.count-row .stepper input::-webkit-outer-spin-button,.count-row .stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.head-status{margin-top:0.9rem;padding:0.75rem 1rem;border-radius:10px;font-weight:700;font-size:0.95rem;}
+.head-status.ng{background:rgba(244,63,94,0.10);border:1px solid rgba(244,63,94,0.35);color:#fda4af;}
+.head-status.ok{background:rgba(56,189,248,0.10);border:1px solid rgba(56,189,248,0.35);color:#7dd3fc;}
+.btn-submit:disabled{opacity:0.45;cursor:not-allowed;filter:grayscale(0.4);}
+/* 合計の固定バー */
+.sticky-total{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(6,10,19,0.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid rgba(56,189,248,0.25);padding:0.75rem 1.25rem calc(0.75rem + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:1rem;transform:translateY(110%);transition:transform .25s ease;}
+.sticky-total.show{transform:translateY(0);}
+.sticky-total .st-left{font-size:0.85rem;color:var(--text-secondary);}
+.sticky-total .st-left b{color:var(--text-primary);font-size:1rem;}
+.sticky-total .st-left .st-warn{color:#fda4af;font-weight:700;}
+.sticky-total .st-price{font-size:1.4rem;font-weight:900;color:#7dd3fc;}
+body.has-sticky .footer{padding-bottom:5.5rem;}
 </style>
 </head>
 <body>
@@ -133,7 +151,6 @@
               <label class="radio-pill"><input type="radio" name="genre" value="ジャズ"><span>ジャズ</span></label>
               <label class="radio-pill"><input type="radio" name="genre" value="ポップス"><span>ポップス</span></label>
               <label class="radio-pill"><input type="radio" name="genre" value="ロック"><span>ロック</span></label>
-              <label class="radio-pill"><input type="radio" name="genre" value="弾き語り"><span>弾き語り</span></label>
               <label class="radio-pill"><input type="radio" name="genre" value="ハワイアン"><span>ハワイアン</span></label>
               <label class="radio-pill"><input type="radio" name="genre" value="その他"><span>その他</span></label>
             </div>
@@ -142,32 +159,60 @@
             </div>
             <p class="error-message" id="error-genre"></p>
           </div>
+          <div class="form-group">
+            <label class="form-label">普段の活動エリア <span class="required-mark">*</span></label>
+            <div class="radio-group" id="areaGroup">
+              <label class="radio-pill"><input type="radio" name="area" value="入間市"><span>入間市</span></label>
+              <label class="radio-pill"><input type="radio" name="area" value="近隣市"><span>近隣市</span></label>
+              <label class="radio-pill"><input type="radio" name="area" value="県外"><span>県外</span></label>
+            </div>
+            <p class="error-message" id="error-area"></p>
+          </div>
         </div>
 
         <!-- 02 参加費（区分ごとの人数） -->
         <div class="form-card">
           <div class="form-card-header"><span class="form-card-number">02</span><h3>参加人数（区分ごと）</h3></div>
           <div class="form-group">
-            <label class="form-label">区分ごとの人数を入力してください <span class="required-mark">*</span></label>
-            <p class="form-hint">バンド内で区分が違ってもOK。区分ごとに人数を入れてください（合計3名以上）。</p>
+            <label class="form-label">区分ごとの人数 <span class="required-mark">*</span></label>
+            <p class="form-hint">バンド内で区分が違ってもOK。＋／−で人数を入れてください。<strong>合計3名以上</strong>で申し込めます。</p>
             <div class="count-row">
               <span class="cr-label">Studio会員 <small>¥2,500/人</small></span>
-              <input type="number" id="cMember" class="form-input" min="0" max="30" value="0" inputmode="numeric">
+              <div class="stepper">
+                <button type="button" class="step-btn" data-target="cMember" data-delta="-1" aria-label="Studio会員を減らす">−</button>
+                <input type="number" id="cMember" class="form-input" min="0" max="30" value="0" inputmode="numeric">
+                <button type="button" class="step-btn" data-target="cMember" data-delta="1" aria-label="Studio会員を増やす">＋</button>
+              </div>
             </div>
             <div class="count-row">
               <span class="cr-label">7月RP・FL出演者 <small>¥3,000/人</small></span>
-              <input type="number" id="cPast" class="form-input" min="0" max="30" value="0" inputmode="numeric">
+              <div class="stepper">
+                <button type="button" class="step-btn" data-target="cPast" data-delta="-1" aria-label="7月RP・FL出演者を減らす">−</button>
+                <input type="number" id="cPast" class="form-input" min="0" max="30" value="0" inputmode="numeric">
+                <button type="button" class="step-btn" data-target="cPast" data-delta="1" aria-label="7月RP・FL出演者を増やす">＋</button>
+              </div>
             </div>
             <div class="count-row">
               <span class="cr-label">ビジター <small>¥3,500/人</small></span>
-              <input type="number" id="cVisitor" class="form-input" min="0" max="30" value="0" inputmode="numeric">
+              <div class="stepper">
+                <button type="button" class="step-btn" data-target="cVisitor" data-delta="-1" aria-label="ビジターを減らす">−</button>
+                <input type="number" id="cVisitor" class="form-input" min="0" max="30" value="0" inputmode="numeric">
+                <button type="button" class="step-btn" data-target="cVisitor" data-delta="1" aria-label="ビジターを増やす">＋</button>
+              </div>
             </div>
+            <div class="head-status ng" id="headStatus">合計 0名 ― あと3名で申込できます</div>
             <p class="error-message" id="error-counts"></p>
           </div>
           <div class="form-group">
-            <label class="form-label" for="minorCount">うち高校生以下の人数（1人につき ¥500 引き）</label>
-            <input type="number" id="minorCount" class="form-input form-input--short" min="0" max="30" value="0" inputmode="numeric" placeholder="0">
-            <p class="form-hint">いない場合は 0 のままで構いません。</p>
+            <label class="form-label">うち高校生以下の人数（1人につき ¥500 引き）</label>
+            <div class="count-row" style="border-bottom:none;">
+              <span class="cr-label">高校生以下 <small>いない場合は0のまま</small></span>
+              <div class="stepper">
+                <button type="button" class="step-btn" data-target="minorCount" data-delta="-1" aria-label="高校生以下を減らす">−</button>
+                <input type="number" id="minorCount" class="form-input" min="0" max="30" value="0" inputmode="numeric">
+                <button type="button" class="step-btn" data-target="minorCount" data-delta="1" aria-label="高校生以下を増やす">＋</button>
+              </div>
+            </div>
             <p class="error-message" id="error-minorCount"></p>
           </div>
         </div>
@@ -264,6 +309,12 @@
     </div>
   </div>
 
+  <!-- ===== STICKY TOTAL ===== -->
+  <div class="sticky-total" id="stickyTotal" aria-live="polite">
+    <div class="st-left" id="stLeft">合計 <b>0名</b> <span class="st-warn">／3名以上で申込できます</span></div>
+    <div class="st-price" id="stPrice">—</div>
+  </div>
+
   <!-- ===== CONFIRM OVERLAY ===== -->
   <div class="overlay" id="confirmOverlay" style="display:none;">
     <div class="overlay-content confirm-box">
@@ -305,7 +356,36 @@
     tot.textContent=yen(price);
     return {total:total, price:price, m:m, j:j, v:v, minors:hh};
   }
-  ['change','input'].forEach(ev=>{ ['cMember','cPast','cVisitor','minorCount'].forEach(id=>$(id).addEventListener(ev,calc)); });
+  function refreshUI(){
+    const c=calc();
+    const t=c.total||0;
+    const st=$('headStatus'), btn=$('submitBtn'), btxt=btn.querySelector('.btn-submit-text');
+    $('minorCount').max=t;
+    if(t>=3){
+      st.className='head-status ok'; st.textContent='合計 '+t+'名 ✓ 申込できます';
+      btn.disabled=false; btxt.textContent='申し込みを送信する';
+      $('stLeft').innerHTML='合計 <b>'+t+'名</b>';
+    }else{
+      st.className='head-status ng'; st.textContent='合計 '+t+'名 ― あと'+(3-t)+'名で申込できます';
+      btn.disabled=true; btxt.textContent='3名以上で申込できます';
+      $('stLeft').innerHTML='合計 <b>'+t+'名</b> <span class="st-warn">／3名以上で申込できます</span>';
+    }
+    $('stPrice').textContent=t>0?yen(c.price):'—';
+  }
+  ['change','input'].forEach(ev=>{ ['cMember','cPast','cVisitor','minorCount'].forEach(id=>$(id).addEventListener(ev,refreshUI)); });
+  document.querySelectorAll('.step-btn').forEach(b=>b.addEventListener('click',()=>{
+    const el=$(b.dataset.target);
+    let v=(parseInt(el.value,10)||0)+parseInt(b.dataset.delta,10);
+    const max=parseInt(el.max,10); if(!isNaN(max)) v=Math.min(v,max);
+    el.value=Math.max(0,v);
+    refreshUI();
+  }));
+  refreshUI();
+  (function(){
+    const bar=$('stickyTotal'), sec=$('application');
+    if(!('IntersectionObserver' in window)){ bar.classList.add('show'); document.body.classList.add('has-sticky'); return; }
+    new IntersectionObserver(es=>{ es.forEach(e=>{ bar.classList.toggle('show',e.isIntersecting); document.body.classList.toggle('has-sticky',e.isIntersecting); }); },{threshold:0.05}).observe(sec);
+  })();
 
   function setErr(id,msg){ const e=$('error-'+id); if(e){ e.textContent=msg||''; } }
   function clearErrs(){ document.querySelectorAll('.error-message').forEach(e=>e.textContent=''); }
@@ -317,6 +397,7 @@
     const g=getGenre();
     if(g===null){ setErr('genre','ジャンルを選択してください'); ok=false; first=first||$('genreGroup'); }
     else if(g===''){ setErr('genre','「その他」のジャンルを入力してください'); ok=false; first=first||$('genreOther'); }
+    if(!document.querySelector('input[name="area"]:checked')){ setErr('area','活動エリアを選択してください'); ok=false; first=first||$('areaGroup'); }
     const m=intv('cMember'), j=intv('cPast'), v=intv('cVisitor'), h=intv('minorCount');
     const total=m+j+v;
     if(total<3){ setErr('counts','区分ごとの人数を入力してください（合計3名以上）'); ok=false; first=first||$('cMember'); }
@@ -353,6 +434,7 @@
       formType:'Real Performance出演者募集',
       groupName:$('groupName').value.trim(),
       genre:getGenre(),
+      area:(document.querySelector('input[name="area"]:checked')||{}).value||'',
       memberCount:c.total,
       countMember:c.m, countPast:c.j, countVisitor:c.v,
       minorCount:c.minors,
@@ -370,6 +452,7 @@
     const rows=[
       ['バンド名',p.groupName],
       ['ジャンル',p.genre],
+      ['活動エリア',p.area],
       ['人数',p.memberCount+'名（Studio会員'+p.countMember+'／7月RP・FL出演者'+p.countPast+'／ビジター'+p.countVisitor+'）'],
       ['高校生以下',p.minorCount+'名'],
       ['代表者',p.representativeName],
