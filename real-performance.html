@@ -74,6 +74,9 @@
 .sticky-total .st-left .st-warn{color:#fda4af;font-weight:700;}
 .sticky-total .st-price{font-size:1.4rem;font-weight:900;color:#7dd3fc;}
 body.has-sticky .footer{padding-bottom:5.5rem;}
+.area-row{display:flex;gap:0.6rem;flex-wrap:wrap;}
+.area-row select{flex:0 0 11rem;}
+.area-row input{flex:1;min-width:10rem;}
 </style>
 </head>
 <body>
@@ -160,11 +163,60 @@ body.has-sticky .footer{padding-bottom:5.5rem;}
             <p class="error-message" id="error-genre"></p>
           </div>
           <div class="form-group">
-            <label class="form-label">普段の活動エリア <span class="required-mark">*</span></label>
-            <div class="radio-group" id="areaGroup">
-              <label class="radio-pill"><input type="radio" name="area" value="入間市"><span>入間市</span></label>
-              <label class="radio-pill"><input type="radio" name="area" value="近隣市"><span>近隣市</span></label>
-              <label class="radio-pill"><input type="radio" name="area" value="県外"><span>県外</span></label>
+            <label class="form-label">メインの活動エリア <span class="required-mark">*</span></label>
+            <p class="form-hint">バンドが主に活動している（練習している）場所の都道府県と市区町村を入れてください。</p>
+            <div class="area-row">
+              <select id="pref" class="form-input">
+                <option value="">都道府県を選択</option>
+                <option value="埼玉県">埼玉県</option>
+                <option value="東京都">東京都</option>
+                <option value="北海道">北海道</option>
+                <option value="青森県">青森県</option>
+                <option value="岩手県">岩手県</option>
+                <option value="宮城県">宮城県</option>
+                <option value="秋田県">秋田県</option>
+                <option value="山形県">山形県</option>
+                <option value="福島県">福島県</option>
+                <option value="茨城県">茨城県</option>
+                <option value="栃木県">栃木県</option>
+                <option value="群馬県">群馬県</option>
+                <option value="千葉県">千葉県</option>
+                <option value="神奈川県">神奈川県</option>
+                <option value="新潟県">新潟県</option>
+                <option value="富山県">富山県</option>
+                <option value="石川県">石川県</option>
+                <option value="福井県">福井県</option>
+                <option value="山梨県">山梨県</option>
+                <option value="長野県">長野県</option>
+                <option value="岐阜県">岐阜県</option>
+                <option value="静岡県">静岡県</option>
+                <option value="愛知県">愛知県</option>
+                <option value="三重県">三重県</option>
+                <option value="滋賀県">滋賀県</option>
+                <option value="京都府">京都府</option>
+                <option value="大阪府">大阪府</option>
+                <option value="兵庫県">兵庫県</option>
+                <option value="奈良県">奈良県</option>
+                <option value="和歌山県">和歌山県</option>
+                <option value="鳥取県">鳥取県</option>
+                <option value="島根県">島根県</option>
+                <option value="岡山県">岡山県</option>
+                <option value="広島県">広島県</option>
+                <option value="山口県">山口県</option>
+                <option value="徳島県">徳島県</option>
+                <option value="香川県">香川県</option>
+                <option value="愛媛県">愛媛県</option>
+                <option value="高知県">高知県</option>
+                <option value="福岡県">福岡県</option>
+                <option value="佐賀県">佐賀県</option>
+                <option value="長崎県">長崎県</option>
+                <option value="熊本県">熊本県</option>
+                <option value="大分県">大分県</option>
+                <option value="宮崎県">宮崎県</option>
+                <option value="鹿児島県">鹿児島県</option>
+                <option value="沖縄県">沖縄県</option>
+              </select>
+              <input type="text" id="city" class="form-input" placeholder="市区町村（例: 入間市、江東区）">
             </div>
             <p class="error-message" id="error-area"></p>
           </div>
@@ -397,7 +449,7 @@ body.has-sticky .footer{padding-bottom:5.5rem;}
     const g=getGenre();
     if(g===null){ setErr('genre','ジャンルを選択してください'); ok=false; first=first||$('genreGroup'); }
     else if(g===''){ setErr('genre','「その他」のジャンルを入力してください'); ok=false; first=first||$('genreOther'); }
-    if(!document.querySelector('input[name="area"]:checked')){ setErr('area','活動エリアを選択してください'); ok=false; first=first||$('areaGroup'); }
+    if(!$('pref').value || !($('city').value||'').trim()){ setErr('area','都道府県と市区町村を入力してください'); ok=false; first=first||$('pref'); }
     const m=intv('cMember'), j=intv('cPast'), v=intv('cVisitor'), h=intv('minorCount');
     const total=m+j+v;
     if(total<3){ setErr('counts','区分ごとの人数を入力してください（合計3名以上）'); ok=false; first=first||$('cMember'); }
@@ -434,7 +486,8 @@ body.has-sticky .footer{padding-bottom:5.5rem;}
       formType:'Real Performance出演者募集',
       groupName:$('groupName').value.trim(),
       genre:getGenre(),
-      area:(document.querySelector('input[name="area"]:checked')||{}).value||'',
+      pref:$('pref').value,
+      city:$('city').value.trim(),
       memberCount:c.total,
       countMember:c.m, countPast:c.j, countVisitor:c.v,
       minorCount:c.minors,
@@ -452,7 +505,7 @@ body.has-sticky .footer{padding-bottom:5.5rem;}
     const rows=[
       ['バンド名',p.groupName],
       ['ジャンル',p.genre],
-      ['活動エリア',p.area],
+      ['活動エリア',p.pref+' '+p.city],
       ['人数',p.memberCount+'名（Studio会員'+p.countMember+'／7月RP・FL出演者'+p.countPast+'／ビジター'+p.countVisitor+'）'],
       ['高校生以下',p.minorCount+'名'],
       ['代表者',p.representativeName],
