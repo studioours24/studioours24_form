@@ -26,8 +26,8 @@
   var(--bg-primary) !important;}
 .badge-accent{background:rgba(56,189,248,0.12) !important;border-color:rgba(56,189,248,0.30) !important;color:#7dd3fc !important;}
 .radio-pill input:checked + span{background:rgba(56,189,248,0.14) !important;border-color:var(--accent-primary) !important;color:#7dd3fc !important;}
-.radio-card:has(input:checked){background:rgba(56,189,248,0.10) !important;border-color:var(--accent-primary) !important;box-shadow:0 0 24px var(--accent-primary-glow) !important;}
 .price-sub{color:#93c5fd;}
+.price-count{color:var(--text-secondary);}
 /* ===== 募集要項レイアウト整列 ===== */
 .info-grid{grid-template-columns:1fr 1fr;gap:1.25rem;align-items:stretch;}
 .info-card{display:flex;flex-direction:column;}
@@ -37,6 +37,12 @@
 .fee-matrix .fee-row-label{text-align:left;}
 .fee-matrix td:last-child{text-align:right;font-weight:700;}
 @media(max-width:640px){ .info-grid{grid-template-columns:1fr;} }
+/* 区分ごとの人数入力 */
+.count-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0.6rem 0;border-bottom:1px solid var(--bg-card-border);}
+.count-row:last-child{border-bottom:none;}
+.count-row .cr-label{font-weight:700;color:var(--text-primary);}
+.count-row .cr-label small{display:block;font-weight:500;font-size:0.8rem;color:var(--text-secondary);}
+.count-row input{width:5.5rem;flex:none;}
 </style>
 </head>
 <body>
@@ -109,37 +115,35 @@
             <p class="error-message" id="error-groupName"></p>
           </div>
           <div class="form-group">
-            <label class="form-label" for="memberCount">人数（3名以上） <span class="required-mark">*</span></label>
-            <input type="number" id="memberCount" name="memberCount" class="form-input form-input--short" min="3" max="30" placeholder="例: 5" required>
-            <p class="error-message" id="error-memberCount"></p>
+            <label class="form-label" for="genre">ジャンル <span class="required-mark">*</span></label>
+            <input type="text" id="genre" name="genre" class="form-input" placeholder="例: ジャズ / ポップス / ロック / 弾き語り など" required>
+            <p class="error-message" id="error-genre"></p>
           </div>
         </div>
 
-        <!-- 02 参加費区分 -->
+        <!-- 02 参加費（区分ごとの人数） -->
         <div class="form-card">
-          <div class="form-card-header"><span class="form-card-number">02</span><h3>参加費区分</h3></div>
+          <div class="form-card-header"><span class="form-card-number">02</span><h3>参加人数（区分ごと）</h3></div>
           <div class="form-group">
-            <label class="form-label">区分を選択してください（1人あたりの金額） <span class="required-mark">*</span></label>
-            <div class="radio-group" id="feeCategory">
-              <label class="radio-pill" for="fee-member">
-                <input type="radio" id="fee-member" name="feeCategory" value="Studio会員" data-price="2500" required>
-                <span>Studio会員（¥2,500/人）</span>
-              </label>
-              <label class="radio-pill" for="fee-past">
-                <input type="radio" id="fee-past" name="feeCategory" value="7月RP・FL出演者" data-price="3000">
-                <span>7月RP・FL出演者（¥3,000/人）</span>
-              </label>
-              <label class="radio-pill" for="fee-visitor">
-                <input type="radio" id="fee-visitor" name="feeCategory" value="ビジター" data-price="3500">
-                <span>ビジター（¥3,500/人）</span>
-              </label>
+            <label class="form-label">区分ごとの人数を入力してください <span class="required-mark">*</span></label>
+            <p class="form-hint">バンド内で区分が違ってもOK。区分ごとに人数を入れてください（合計3名以上）。</p>
+            <div class="count-row">
+              <span class="cr-label">Studio会員 <small>¥2,500/人</small></span>
+              <input type="number" id="cMember" class="form-input" min="0" max="30" value="0" inputmode="numeric">
             </div>
-            <p class="form-hint">「7月RP・FL出演者」＝2026年7月のReal Performance／Friendly Live に出演された方</p>
-            <p class="error-message" id="error-feeCategory"></p>
+            <div class="count-row">
+              <span class="cr-label">7月RP・FL出演者 <small>¥3,000/人</small></span>
+              <input type="number" id="cPast" class="form-input" min="0" max="30" value="0" inputmode="numeric">
+            </div>
+            <div class="count-row">
+              <span class="cr-label">ビジター <small>¥3,500/人</small></span>
+              <input type="number" id="cVisitor" class="form-input" min="0" max="30" value="0" inputmode="numeric">
+            </div>
+            <p class="error-message" id="error-counts"></p>
           </div>
           <div class="form-group">
             <label class="form-label" for="minorCount">うち高校生以下の人数（1人につき ¥500 引き）</label>
-            <input type="number" id="minorCount" name="minorCount" class="form-input form-input--short" min="0" max="30" value="0" placeholder="0">
+            <input type="number" id="minorCount" class="form-input form-input--short" min="0" max="30" value="0" inputmode="numeric" placeholder="0">
             <p class="form-hint">いない場合は 0 のままで構いません。</p>
             <p class="error-message" id="error-minorCount"></p>
           </div>
@@ -204,7 +208,7 @@
           <div class="form-card-header"><span class="form-card-number">¥</span><h3>参加費（税込）</h3></div>
           <div class="price-display">
             <div class="price-breakdown" id="priceBreakdown">
-              <p class="price-line" id="priceLine">区分と人数を入力すると自動計算されます</p>
+              <p class="price-line" id="priceLine">区分ごとの人数を入力すると自動計算されます</p>
             </div>
             <div class="price-total">
               <span class="price-total-label">合計</span>
@@ -242,52 +246,48 @@
 <script>
 (function(){
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbySXR6ThrZVRaBEBClEXRF7SXIwOlahXql8AsMD4lOvs736n6xWdZFhPIvBDitlHKQZ/exec';
+  const P = { member:2500, past:3000, visitor:3500 };
   const $ = (id)=>document.getElementById(id);
   const yen = (n)=>'¥'+Number(n).toLocaleString();
+  const intv = (id)=>{ const v=parseInt($(id).value,10); return isNaN(v)||v<0?0:v; };
 
-  function getUnit(){ const el=document.querySelector('input[name="feeCategory"]:checked'); return el?Number(el.dataset.price):0; }
   function calc(){
-    const unit=getUnit();
-    const n=parseInt($('memberCount').value,10)||0;
-    const h=parseInt($('minorCount').value,10)||0;
-    const cat=document.querySelector('input[name="feeCategory"]:checked');
-    const line=$('priceLine'); const total=$('priceTotal'); const bd=$('priceBreakdown');
-    if(!unit || !n){ bd.innerHTML='<p class="price-line" id="priceLine">区分と人数を入力すると自動計算されます</p>'; total.textContent='—'; return; }
-    const base=unit*n;
-    const hh=Math.min(h,n);
+    const m=intv('cMember'), j=intv('cPast'), v=intv('cVisitor'), h=intv('minorCount');
+    const total=m+j+v;
+    const bd=$('priceBreakdown'), tot=$('priceTotal');
+    if(total<=0){ bd.innerHTML='<p class="price-line" id="priceLine">区分ごとの人数を入力すると自動計算されます</p>'; tot.textContent='—'; return {total:0,price:0}; }
+    let html=''; 
+    if(m>0) html+='<p class="price-line">Studio会員 '+yen(P.member)+' × '+m+'名 = '+yen(P.member*m)+'</p>';
+    if(j>0) html+='<p class="price-line">7月RP・FL出演者 '+yen(P.past)+' × '+j+'名 = '+yen(P.past*j)+'</p>';
+    if(v>0) html+='<p class="price-line">ビジター '+yen(P.visitor)+' × '+v+'名 = '+yen(P.visitor*v)+'</p>';
+    const hh=Math.min(h,total);
     const disc=500*hh;
-    const sum=Math.max(base-disc,0);
-    let html='<p class="price-line">'+cat.value+' '+yen(unit)+' × '+n+'名 = '+yen(base)+'</p>';
-    if(hh>0){ html+='<p class="price-line price-sub">高校生以下 '+hh+'名 − '+yen(500)+' × '+hh+'名 = −'+yen(disc)+'</p>'; }
+    if(hh>0) html+='<p class="price-line price-sub">高校生以下 '+hh+'名 − '+yen(500)+' × '+hh+'名 = −'+yen(disc)+'</p>';
+    html+='<p class="price-line price-count">合計人数 '+total+'名</p>';
     bd.innerHTML=html;
-    total.textContent=yen(sum);
-    return {unit:unit, total:sum};
+    const price=Math.max(P.member*m+P.past*j+P.visitor*v-disc,0);
+    tot.textContent=yen(price);
+    return {total:total, price:price, m:m, j:j, v:v, minors:hh};
   }
-  ['change','input'].forEach(ev=>{
-    document.querySelectorAll('input[name="feeCategory"]').forEach(el=>el.addEventListener(ev,calc));
-    $('memberCount').addEventListener(ev,calc);
-    $('minorCount').addEventListener(ev,calc);
-  });
+  ['change','input'].forEach(ev=>{ ['cMember','cPast','cVisitor','minorCount'].forEach(id=>$(id).addEventListener(ev,calc)); });
 
   function setErr(id,msg){ const e=$('error-'+id); if(e){ e.textContent=msg||''; } }
   function clearErrs(){ document.querySelectorAll('.error-message').forEach(e=>e.textContent=''); }
+  function req(id,msg,first){ const v=($(id).value||'').trim(); if(!v){ setErr(id,msg); return null; } return v; }
 
   function validate(){
     clearErrs(); let ok=true; let first=null;
-    const req=(id,msg)=>{ const v=($(id).value||'').trim(); if(!v){ setErr(id,msg); ok=false; first=first||$(id); } };
-    req('groupName','バンド名を入力してください');
-    const n=parseInt($('memberCount').value,10);
-    if(!n){ setErr('memberCount','人数を入力してください'); ok=false; first=first||$('memberCount'); }
-    else if(n<3){ setErr('memberCount','バンドは3名以上でお申し込みください'); ok=false; first=first||$('memberCount'); }
-    if(!document.querySelector('input[name="feeCategory"]:checked')){ setErr('feeCategory','区分を選択してください'); ok=false; }
-    const h=parseInt($('minorCount').value,10)||0;
-    if(h<0){ setErr('minorCount','0以上で入力してください'); ok=false; }
-    else if(n && h>n){ setErr('minorCount','人数を超えています'); ok=false; first=first||$('minorCount'); }
-    req('representativeName','代表者氏名を入力してください');
+    if(!($('groupName').value||'').trim()){ setErr('groupName','バンド名を入力してください'); ok=false; first=first||$('groupName'); }
+    if(!($('genre').value||'').trim()){ setErr('genre','ジャンルを入力してください'); ok=false; first=first||$('genre'); }
+    const m=intv('cMember'), j=intv('cPast'), v=intv('cVisitor'), h=intv('minorCount');
+    const total=m+j+v;
+    if(total<3){ setErr('counts','区分ごとの人数を入力してください（合計3名以上）'); ok=false; first=first||$('cMember'); }
+    if(h>total){ setErr('minorCount','高校生以下の人数が合計人数を超えています'); ok=false; first=first||$('minorCount'); }
+    if(!($('representativeName').value||'').trim()){ setErr('representativeName','代表者氏名を入力してください'); ok=false; first=first||$('representativeName'); }
     const email=($('email').value||'').trim();
     if(!email){ setErr('email','メールアドレスを入力してください'); ok=false; first=first||$('email'); }
     else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ setErr('email','メールアドレスの形式が正しくありません'); ok=false; first=first||$('email'); }
-    req('phone','電話番号を入力してください');
+    if(!($('phone').value||'').trim()){ setErr('phone','電話番号を入力してください'); ok=false; first=first||$('phone'); }
     if(!document.querySelector('input[name="preferredTimeSlot1"]:checked')){ setErr('preferredTimeSlot1','第1希望を選択してください'); ok=false; }
     if(first){ first.scrollIntoView({behavior:'smooth',block:'center'}); }
     return ok;
@@ -307,11 +307,11 @@
     const payload={
       formType:'Real Performance出演者募集',
       groupName:$('groupName').value.trim(),
-      memberCount:parseInt($('memberCount').value,10),
-      minorCount:parseInt($('minorCount').value,10)||0,
-      feeCategory:document.querySelector('input[name="feeCategory"]:checked').value,
-      unitPrice:c.unit,
-      totalPrice:c.total,
+      genre:$('genre').value.trim(),
+      memberCount:c.total,
+      countMember:c.m, countPast:c.j, countVisitor:c.v,
+      minorCount:c.minors,
+      totalPrice:c.price,
       representativeName:$('representativeName').value.trim(),
       email:$('email').value.trim(),
       phone:$('phone').value.trim(),
@@ -323,9 +323,8 @@
     let receipt='';
     try{
       const res=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-      try{ const j=await res.json(); if(j&&j.receiptNumber) receipt=j.receiptNumber; }catch(_){}
+      try{ const jr=await res.json(); if(jr&&jr.receiptNumber) receipt=jr.receiptNumber; }catch(_){}
     }catch(err){
-      // CORS等で失敗した場合は no-cors で再送（応答は読めない）
       try{ await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}); }
       catch(err2){
         alert('送信に失敗しました。通信環境をご確認のうえ、もう一度お試しください。');
