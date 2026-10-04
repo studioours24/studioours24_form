@@ -138,7 +138,7 @@ body.has-sticky .footer{padding-bottom:5.5rem;}
   <section class="form-section" id="application">
     <div class="container">
       <h2 class="section-title">出演申し込みフォーム</h2>
-      <p class="form-note">すべての必須項目（<span class="required-mark">*</span>）をご入力ください。<br>送信後、ご入力のメールアドレスに確認メールが届きます。メール内のリンクで申込が確定します。</p>
+      <p class="form-note">すべての必須項目（<span class="required-mark">*</span>）をご入力ください。<br>送信後、ご入力のメールアドレスに本申し込みメールが届きます。メール内のリンクで申込が確定します。</p>
 
       <form id="rpForm" novalidate>
 
@@ -282,7 +282,7 @@ body.has-sticky .footer{padding-bottom:5.5rem;}
           <div class="form-group">
             <label class="form-label" for="email">代表者メールアドレス <span class="required-mark">*</span></label>
             <input type="email" id="email" name="email" class="form-input" placeholder="例: example@email.com" required>
-            <p class="form-hint">※ 確認メールをお送りします。有効なメールアドレスをご入力ください。</p>
+            <p class="form-hint">※ 本申し込みメールをお送りします。有効なメールアドレスをご入力ください。</p>
             <p class="error-message" id="error-email"></p>
           </div>
           <div class="form-group">
@@ -351,10 +351,10 @@ body.has-sticky .footer{padding-bottom:5.5rem;}
   <div class="overlay" id="completionOverlay" style="display:none;">
     <div class="overlay-content">
       <div class="overlay-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-      <h2>確認メールを送信しました</h2>
+      <h2>本申し込みメールを送信しました</h2>
       <p class="overlay-warn">⚠ まだお申し込みは確定していません<br><span>メール内の確認リンクを押すと確定します</span></p>
       <p class="overlay-email" id="completionEmail"></p>
-      <p>上記のメールアドレスに確認メールをお送りしました。</p>
+      <p>上記のメールアドレスに本申し込みメールをお送りしました。</p>
       <p>メール内のリンクをクリックして、お申し込みを確定してください。</p>
       <div class="overlay-notice">
         <p>確認リンクの有効期限は <strong>48時間</strong> です。</p>
