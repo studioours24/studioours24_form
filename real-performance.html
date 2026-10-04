@@ -77,6 +77,8 @@ body.has-sticky .footer{padding-bottom:5.5rem;}
 .area-row{display:flex;gap:0.6rem;flex-wrap:wrap;}
 .area-row select{flex:0 0 11rem;}
 .area-row input{flex:1;min-width:10rem;}
+.overlay-warn{margin:1rem 0 1.25rem;padding:0.9rem 1rem;border-radius:10px;background:rgba(244,63,94,0.12);border:1px solid rgba(244,63,94,0.45);color:#fda4af;font-weight:800;font-size:1.05rem;line-height:1.6;}
+.overlay-warn span{font-weight:700;font-size:0.9rem;color:#fecdd3;}
 </style>
 </head>
 <body>
@@ -350,6 +352,7 @@ body.has-sticky .footer{padding-bottom:5.5rem;}
     <div class="overlay-content">
       <div class="overlay-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
       <h2>確認メールを送信しました</h2>
+      <p class="overlay-warn">⚠ まだお申し込みは確定していません<br><span>メール内の確認リンクを押すと確定します</span></p>
       <p class="overlay-email" id="completionEmail"></p>
       <p>上記のメールアドレスに確認メールをお送りしました。</p>
       <p>メール内のリンクをクリックして、お申し込みを確定してください。</p>
