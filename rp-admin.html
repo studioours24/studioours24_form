@@ -86,6 +86,42 @@ button{font:inherit;cursor:pointer}
 .toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:#0f1b2d;border:1px solid var(--ac);color:var(--ac2);padding:.6rem 1rem;border-radius:100px;font-size:.85rem;font-weight:700;z-index:80;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.show{opacity:1}
 .loading{color:var(--tx2);font-size:.9rem;padding:1rem 0}
+/* ===== 初見向け ===== */
+.deadline{display:inline-flex;align-items:center;gap:.4rem;margin-top:.5rem;padding:.3rem .75rem;border-radius:100px;font-size:.8rem;font-weight:700;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.35);color:var(--ac2)}
+.deadline.closed{background:rgba(255,255,255,.05);border-color:var(--line);color:var(--tx2)}
+.guide{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:1.25rem}
+.guide summary{cursor:pointer;padding:.85rem 1rem;font-weight:700;font-size:.9rem;list-style:none}
+.guide summary::-webkit-details-marker{display:none}
+.guide summary::before{content:'▶';display:inline-block;margin-right:.5rem;font-size:.7rem;color:var(--ac2);transition:transform .15s}
+.guide[open] summary::before{transform:rotate(90deg)}
+.guide .gb{padding:0 1rem 1rem;font-size:.86rem;color:var(--tx2)}
+.flow{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin:.4rem 0 .9rem}
+.flow span{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:8px;padding:.35rem .6rem;color:var(--tx);font-weight:700;font-size:.8rem}
+.flow span.end{border-color:rgba(56,189,248,.5);color:var(--ac2)}
+.flow i{font-style:normal;color:var(--tx3)}
+.guide ul{padding-left:1.1rem;line-height:1.9}
+.sec-t{font-size:.95rem;font-weight:800;margin:0 0 .6rem}
+.sec-t small{font-weight:500;color:var(--tx3);font-size:.75rem;margin-left:.4rem}
+.capbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem;margin-bottom:1.25rem}
+.seats{display:grid;grid-template-columns:repeat(13,minmax(0,34px));gap:5px;margin:.5rem 0 .7rem}
+.seat{aspect-ratio:1;border-radius:5px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.seat.f{background:var(--ac);border-color:var(--ac)}
+.seat.x{background:rgba(251,113,133,.85);border-color:var(--ng)}
+.capmsg{font-size:.95rem;font-weight:800}
+.capmsg.over{color:var(--warn)} .capmsg.ok{color:var(--ac2)}
+.capsub{font-size:.78rem;color:var(--tx3);margin-top:.15rem}
+.todo{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.6rem;margin-bottom:1.25rem}
+.td{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem 1rem;color:var(--tx)}
+.td:hover{border-color:rgba(56,189,248,.45)}
+.td .tn{font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:800;line-height:1.1}
+.td .tl{font-weight:800;font-size:.9rem;margin-top:.15rem}
+.td .tx{font-size:.75rem;color:var(--tx2);margin-top:.2rem;line-height:1.5}
+.td.hot .tn{color:var(--warn)} .td.zero{opacity:.55}
+.td .go{font-size:.72rem;color:var(--ac2);margin-top:.35rem;font-weight:700}
+.alldone{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.35);color:var(--ok);border-radius:14px;padding:.85rem 1rem;font-weight:700;font-size:.9rem;margin-bottom:1.25rem}
+.k .s{line-height:1.45}
+.legend{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font-size:.75rem;color:var(--tx2);margin:-.25rem 0 .75rem}
+.legend .bd{margin:0 .3rem 0 0}
 </style>
 </head>
 <body>
@@ -103,7 +139,7 @@ button{font:inherit;cursor:pointer}
 <div id="app" hidden>
   <div class="wrap">
     <div class="top">
-      <h1><small>REAL PERFORMANCE 2027</small>申込管理<div class="upd" id="upd"></div></h1>
+      <h1><small>REAL PERFORMANCE 2027</small>申込管理<div class="upd" id="upd"></div><div class="deadline" id="deadline"></div></h1>
       <div class="acts">
         <button class="btn" id="reloadBtn">更新</button>
         <button class="btn" id="csvBtn">CSV</button>
@@ -111,24 +147,47 @@ button{font:inherit;cursor:pointer}
       </div>
     </div>
 
+    <details class="guide" id="guide">
+      <summary>はじめての方へ：この画面の見方</summary>
+      <div class="gb">
+        <div>申込が「確定」するまでの流れ</div>
+        <div class="flow"><span>フォームから送信</span><i>→</i><span>本申し込みメールが届く</span><i>→</i><span>メール内のリンクを押す</span><i>→</i><span class="end">申込確定</span></div>
+        <ul>
+          <li>リンクを押していない申込は「<b>メール未確認</b>」で、まだ確定していません（定員の数にも入りません）。</li>
+          <li>定員は<b>13組</b>。締切（10/13）時点で確定が13組を超えたら<b>抽選</b>します。</li>
+          <li>入金や抽選結果は、下の一覧から申込をタップして記録します（スプレッドシートにも保存されます）。</li>
+          <li>集計や人数・金額は「申込確定」した分だけで数えています。</li>
+        </ul>
+      </div>
+    </details>
+
+    <div class="sec-t">定員の埋まり具合 <small>1マス＝1組（確定した申込）</small></div>
+    <div class="capbox" id="capbox"></div>
+
+    <div class="sec-t">今やること <small>押すと該当の申込だけ表示します</small></div>
+    <div id="todo"></div>
+
+    <div class="sec-t">数字のまとめ <small>申込確定した分のみ</small></div>
     <div class="kpi" id="kpi"></div>
+    <div class="sec-t">内訳 <small>申込確定した分のみ</small></div>
     <div class="tal" id="tal"></div>
 
     <div class="lh">
-      <h2>申込一覧</h2>
+      <h2 id="listTop">申込一覧</h2>
       <input id="q" type="search" placeholder="バンド名・代表者で検索">
       <select id="filter">
-        <option value="all">すべて</option>
-        <option value="conf">確定のみ</option>
-        <option value="unconf">未確認（メール未クリック）</option>
+        <option value="all">すべて表示</option>
+        <option value="conf">申込確定のみ</option>
+        <option value="unconf">メール未確認（まだ確定前）</option>
+        <option value="unpaid">入金待ち</option>
+        <option value="paid">入金済み</option>
+        <option value="nores">抽選未定</option>
         <option value="win">当選</option>
         <option value="lose">落選</option>
         <option value="hold">保留</option>
-        <option value="nores">抽選未定</option>
-        <option value="unpaid">未入金（確定分）</option>
-        <option value="paid">入金済み</option>
       </select>
     </div>
+    <div class="legend"><span><span class="bd b-ac">申込確定</span>メールまで完了</span><span><span class="bd b-mu">メール未確認</span>まだ確定前</span><span><span class="bd b-ok">入金済み</span></span><span><span class="bd b-wa">入金待ち</span></span><span><span class="bd b-ok">当選</span><span class="bd b-ng">落選</span><span class="bd b-wa">保留</span>抽選結果</span></div>
     <div class="list" id="list"><div class="loading">読み込み中…</div></div>
   </div>
 </div>
@@ -185,14 +244,33 @@ button{font:inherit;cursor:pointer}
     const paidFee=paid.reduce((a,o)=>a+num(o['合計金額']),0);
     const win=conf.filter(o=>o['抽選結果']==='当選').length;
     const over=conf.length-CAP;
+    // 締切
+    const dl=new Date('2026-10-13T23:59:59+09:00'), days=Math.ceil((dl-now)/86400000);
+    $('deadline').className='deadline'+(days<0?' closed':'');
+    $('deadline').textContent= days<0 ? '申込締切済み（10/13）' : (days===0?'申込締切 今日（10/13）':'申込締切 10/13 まで あと'+days+'日');
+    // 定員マス
+    let seats='';
+    for(let n=0;n<CAP;n++) seats+='<div class="seat'+(n<conf.length?' f':'')+'"></div>';
+    for(let n=0;n<Math.max(0,over);n++) seats+='<div class="seat x"></div>';
+    $('capbox').innerHTML='<div class="seats">'+seats+'</div>'+
+      (over>0
+        ? '<div class="capmsg over">確定 '+conf.length+'組 ／ 定員13組 → '+over+'組オーバー</div><div class="capsub">締切後に抽選が必要です（赤いマス＝定員を超えた分）</div>'
+        : '<div class="capmsg ok">確定 '+conf.length+'組 ／ 定員13組 → あと'+(CAP-conf.length)+'組</div><div class="capsub">今のところ抽選は不要です</div>');
+    // 今やること
+    const nUn=unconf.length, nPay=conf.filter(o=>o['入金']!=='入金済み').length, nRes=conf.filter(o=>!o['抽選結果']).length;
+    const td=(n,label,desc,f,hot)=>'<button type="button" class="td'+(n?(hot?' hot':''):' zero')+'" data-f="'+f+'"><div class="tn">'+n+'組</div><div class="tl">'+label+'</div><div class="tx">'+desc+'</div>'+(n?'<div class="go">一覧で見る →</div>':'')+'</button>';
+    const items=[td(nUn,'メール未確認','申込者がまだ本申し込みメールのリンクを押していません。このままだと確定しません。','unconf',true),
+                 td(nPay,'入金待ち','申込確定したが、入金がまだ記録されていない組です。','unpaid',true)];
+    if(over>0) items.push(td(nRes,'抽選未定','定員を超えているため、抽選結果（当選/落選）の記録が必要です。','nores',true));
+    $('todo').innerHTML=(nUn||nPay||(over>0&&nRes))?'<div class="todo">'+items.join('')+'</div>':'<div class="alldone">✓ 今やることはありません</div>';
+    document.querySelectorAll('#todo .td').forEach(b=>b.onclick=()=>{ $('filter').value=b.dataset.f; renderList(); $('listTop').scrollIntoView({behavior:'smooth',block:'start'}); });
     $('kpi').innerHTML=
-      k('確定申込',conf.length+'組','未確認 '+unconf.length+'組')+
-      '<div class="k cap'+(over>0?' over':'')+'"><div class="l">定員 '+CAP+'組</div><div class="v">'+(over>0?over+'組超過':'残り'+(CAP-conf.length))+'</div><div class="s">'+(over>0?'抽選が必要':'抽選不要（現時点）')+'</div></div>'+
-      k('合計人数',ppl+'名','確定分')+
-      k('参加費合計',yen(fee),'確定分')+
-      k('入金済み',paid.length+'組',yen(paidFee))+
-      k('当選',win+'組','抽選結果');
-    $('tal').innerHTML=tally('ジャンル別（確定）',conf,'ジャンル')+tally('エリア区分別（確定）',conf,'エリア区分',['入間市','近郊市','遠方'])+tally('希望時間帯・第1（確定）',conf,'希望時間帯(第1)',['午前中','昼〜夕方','夕方〜夜','いつでも可']);
+      k('申込確定',conf.length+'組','本申し込みメールまで完了／メール未確認 '+unconf.length+'組')+
+      k('合計人数',ppl+'名','出演するメンバーの合計')+
+      k('参加費（見込み）',yen(fee),'確定した申込の参加費の合計')+
+      k('入金済み',paid.length+'組','入金額 '+yen(paidFee)+'／入金待ち '+(conf.length-paid.length)+'組')+
+      k('当選',win+'組','抽選で当選にした組');
+    $('tal').innerHTML=tally('ジャンル',conf,'ジャンル')+tally('活動エリア（入間市／近郊市／遠方）',conf,'エリア区分',['入間市','近郊市','遠方'])+tally('希望の出演時間帯（第1希望）',conf,'希望時間帯(第1)',['午前中','昼〜夕方','夕方〜夜','いつでも可']);
     renderList();
   }
   function k(l,v,s){ return '<div class="k"><div class="l">'+esc(l)+'</div><div class="v">'+esc(v)+'</div><div class="s">'+esc(s)+'</div></div>'; }
@@ -204,8 +282,8 @@ button{font:inherit;cursor:pointer}
     return '<div class="t"><h3>'+esc(title)+'</h3>'+body+'</div>';
   }
   function badges(o){
-    let b=isConf(o)?'<span class="bd b-ac">確定</span>':'<span class="bd b-mu">未確認</span>';
-    if(isConf(o)) b+= o['入金']==='入金済み'?'<span class="bd b-ok">入金済み</span>':'<span class="bd b-wa">未入金</span>';
+    let b=isConf(o)?'<span class="bd b-ac">申込確定</span>':'<span class="bd b-mu">メール未確認</span>';
+    if(isConf(o)) b+= o['入金']==='入金済み'?'<span class="bd b-ok">入金済み</span>':'<span class="bd b-wa">入金待ち</span>';
     const r=o['抽選結果']; if(r==='当選') b+='<span class="bd b-ok">当選</span>'; else if(r==='落選') b+='<span class="bd b-ng">落選</span>'; else if(r==='保留') b+='<span class="bd b-wa">保留</span>';
     return b;
   }
@@ -236,7 +314,7 @@ button{font:inherit;cursor:pointer}
       if(lab==='人数内訳') return 'Studio会員'+num(o['Studio会員数'])+'／7月RP・FL出演者'+num(o['7月RP・FL出演者数'])+'／ビジター'+num(o['ビジター数']);
       if(lab==='参加費合計') return yen(o['合計金額']);
       if(lab==='希望時間帯') return (o['希望時間帯(第1)']||'')+(o['希望時間帯(第2)']?'（第2: '+o['希望時間帯(第2)']+'）':'');
-      if(lab==='状態') return isConf(o)?'確定（メール確認済み）':'未確認（本申し込みメール未クリック）';
+      if(lab==='状態') return isConf(o)?'申込確定（本申し込みメールのリンクまで完了）':'メール未確認（申込者がまだリンクを押していない＝確定前）';
       if(lab==='電話') return fixTel(o['電話番号']);
       return o[key]==null||o[key]===''?'—':o[key];
     };
@@ -244,8 +322,8 @@ button{font:inherit;cursor:pointer}
     $('md').innerHTML='<h3>'+esc(o['バンド名'])+'</h3><div class="rc">'+esc(o['受付番号'])+'</div>'+
       '<div>'+badges(o)+'</div>'+
       '<dl class="dl">'+f.map(x=>'<div><dt>'+esc(x[0])+'</dt><dd>'+esc(val(x[0],x[1]))+'</dd></div>').join('')+'</dl>'+
-      '<div class="grp"><div class="gl">入金</div>'+seg('paid',[['入金済み','入金済み'],['未入金','未入金'],['','未設定']],o['入金'])+'</div>'+
-      '<div class="grp"><div class="gl">抽選結果</div>'+seg('result',[['当選','当選'],['落選','落選'],['保留','保留'],['','未定']],o['抽選結果'])+'</div>'+
+      '<div class="grp"><div class="gl">入金（受け取ったら「入金済み」を押す）</div>'+seg('paid',[['入金済み','入金済み'],['未入金','入金待ち'],['','未記録']],o['入金'])+'</div>'+
+      '<div class="grp"><div class="gl">抽選結果（定員超過で抽選した場合に記録）</div>'+seg('result',[['当選','当選'],['落選','落選'],['保留','保留'],['','未定']],o['抽選結果'])+'</div>'+
       '<div class="grp"><div class="gl">管理メモ（申込者には表示されません）</div><textarea id="memo">'+esc(o['管理メモ']||'')+'</textarea></div>'+
       '<div class="foot"><button class="btn" id="mdClose">閉じる</button><button class="btn btn-pri" id="memoSave">メモを保存</button></div>';
     $('ov').hidden=false;
@@ -282,6 +360,7 @@ button{font:inherit;cursor:pointer}
   $('reloadBtn').onclick=reload; $('logoutBtn').onclick=logout; $('csvBtn').onclick=csv;
   $('q').addEventListener('input',renderList); $('filter').addEventListener('change',renderList);
 
+  try{ if(!localStorage.getItem('rpGuideSeen')){ $('guide').open=true; localStorage.setItem('rpGuideSeen','1'); } }catch(e){}
   const saved=store(true); if(saved){ $('pin').value=saved; login(); }
 })();
 </script>
