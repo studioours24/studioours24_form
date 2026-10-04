@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>管理 | 夢のバンドフェス2027 Real Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060a13;--bg2:#0c1220;--card:rgba(255,255,255,0.04);--line:rgba(255,255,255,0.08);--tx:#eef2f7;--tx2:rgba(238,242,247,0.62);--tx3:rgba(238,242,247,0.36);--ac:#38bdf8;--ac2:#7dd3fc;--ok:#34d399;--ng:#fb7185;--warn:#fbbf24;--grad:linear-gradient(135deg,#e0f2fe,#7dd3fc,#38bdf8,#818cf8);}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;min-height:100vh;}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:1080px;margin:0 auto;padding:1.25rem}
+/* login */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.25rem}
+.login-box{width:100%;max-width:360px;background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:2rem 1.5rem;text-align:center}
+.login-box h1{font-family:'Outfit',sans-serif;font-size:1.1rem;letter-spacing:.2em;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.login-box p{color:var(--tx2);font-size:.85rem;margin:.4rem 0 1.4rem}
+.login-box input{width:100%;padding:.9rem 1rem;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--tx);font-size:1.1rem;text-align:center;letter-spacing:.2em}
+.btn{padding:.75rem 1.1rem;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--tx);font-weight:700}
+.btn-pri{background:var(--grad);color:#05121f;border:none}
+.login-box .btn{width:100%;margin-top:.9rem}
+.err{color:var(--ng);font-size:.85rem;margin-top:.7rem;min-height:1.2em}
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.top h1{font-size:1.15rem;font-weight:900}
+.top h1 small{display:block;font-family:'Outfit',sans-serif;font-size:.7rem;letter-spacing:.2em;color:var(--ac2)}
+.top .acts{display:flex;gap:.5rem;flex-wrap:wrap}
+.top .acts .btn{font-size:.85rem;padding:.55rem .9rem}
+.upd{font-size:.75rem;color:var(--tx3);margin-top:.2rem}
+/* kpi */
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin-bottom:1.25rem}
+.k{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.9rem 1rem}
+.k .l{font-size:.75rem;color:var(--tx2)}
+.k .v{font-family:'Outfit',sans-serif;font-size:1.7rem;font-weight:800;line-height:1.2;margin-top:.15rem}
+.k .s{font-size:.72rem;color:var(--tx3)}
+.k.cap .v{color:var(--ac2)} .k.cap.over .v{color:var(--warn)}
+/* tallies */
+.tal{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.75rem;margin-bottom:1.5rem}
+.t{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem}
+.t h3{font-size:.85rem;margin-bottom:.6rem;color:var(--tx2);font-weight:700}
+.bar{display:grid;grid-template-columns:6.5rem 1fr 2rem;align-items:center;gap:.5rem;font-size:.82rem;margin:.35rem 0}
+.bar .tr{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.bar .fi{height:100%;background:var(--ac);border-radius:4px}
+.bar .n{text-align:right;font-family:'Outfit',sans-serif;font-weight:700}
+.empty{color:var(--tx3);font-size:.82rem}
+/* list */
+.lh{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.75rem}
+.lh h2{font-size:1rem;margin-right:auto}
+.lh input,.lh select{padding:.6rem .8rem;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--tx);font-size:.9rem}
+.lh select option{background:var(--bg2)}
+.list{display:flex;flex-direction:column;gap:.55rem}
+.row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem 1rem;display:flex;gap:1rem;align-items:center;cursor:pointer;transition:border-color .15s}
+.row:hover{border-color:rgba(56,189,248,.4)}
+.row .m{flex:1;min-width:0}
+.row .nm{font-weight:800;font-size:1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .sub{font-size:.78rem;color:var(--tx2);margin-top:.1rem}
+.row .r{text-align:right;flex:none}
+.row .yen{font-family:'Outfit',sans-serif;font-weight:800;font-size:1.05rem}
+.bd{display:inline-block;font-size:.7rem;font-weight:700;padding:.12rem .5rem;border-radius:100px;margin:.25rem 0 0 .25rem;border:1px solid}
+.b-ok{color:var(--ok);border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08)}
+.b-ng{color:var(--ng);border-color:rgba(251,113,133,.4);background:rgba(251,113,133,.08)}
+.b-wa{color:var(--warn);border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.08)}
+.b-mu{color:var(--tx2);border-color:var(--line);background:rgba(255,255,255,.03)}
+.b-ac{color:var(--ac2);border-color:rgba(56,189,248,.4);background:rgba(56,189,248,.08)}
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center;z-index:50;padding:0}
+.ov[hidden]{display:none}
+.md{width:100%;max-width:620px;max-height:92vh;overflow-y:auto;background:var(--bg2);border:1px solid var(--line);border-radius:18px 18px 0 0;padding:1.25rem}
+@media(min-width:700px){.ov{align-items:center;padding:1rem}.md{border-radius:18px}}
+.md h3{font-size:1.15rem;font-weight:900;margin-bottom:.2rem}
+.md .rc{font-family:'Outfit',sans-serif;font-size:.8rem;color:var(--ac2)}
+.dl{margin:1rem 0;border-top:1px solid var(--line)}
+.dl div{display:flex;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.dl dt{flex:0 0 7.5rem;color:var(--tx2)} .dl dd{flex:1;word-break:break-word;white-space:pre-wrap}
+.grp{margin:1rem 0}
+.grp .gl{font-size:.8rem;color:var(--tx2);margin-bottom:.4rem;font-weight:700}
+.seg{display:flex;gap:.4rem;flex-wrap:wrap}
+.seg button{padding:.55rem .9rem;border-radius:100px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--tx);font-size:.85rem;font-weight:700}
+.seg button.on{background:rgba(56,189,248,.18);border-color:var(--ac);color:var(--ac2)}
+.md textarea{width:100%;min-height:90px;padding:.7rem;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--tx);font:inherit;font-size:.9rem}
+.md .foot{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:#0f1b2d;border:1px solid var(--ac);color:var(--ac2);padding:.6rem 1rem;border-radius:100px;font-size:.85rem;font-weight:700;z-index:80;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.loading{color:var(--tx2);font-size:.9rem;padding:1rem 0}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-box">
+    <h1>ADMIN</h1>
+    <p>夢のバンドフェス2027 Real Performance<br>申込管理</p>
+    <input id="pin" type="password" inputmode="text" autocomplete="off" placeholder="PIN">
+    <button class="btn btn-pri" id="loginBtn">開く</button>
+    <div class="err" id="lgErr"></div>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <div class="wrap">
+    <div class="top">
+      <h1><small>REAL PERFORMANCE 2027</small>申込管理<div class="upd" id="upd"></div></h1>
+      <div class="acts">
+        <button class="btn" id="reloadBtn">更新</button>
+        <button class="btn" id="csvBtn">CSV</button>
+        <button class="btn" id="logoutBtn">ログアウト</button>
+      </div>
+    </div>
+
+    <div class="kpi" id="kpi"></div>
+    <div class="tal" id="tal"></div>
+
+    <div class="lh">
+      <h2>申込一覧</h2>
+      <input id="q" type="search" placeholder="バンド名・代表者で検索">
+      <select id="filter">
+        <option value="all">すべて</option>
+        <option value="conf">確定のみ</option>
+        <option value="unconf">未確認（メール未クリック）</option>
+        <option value="win">当選</option>
+        <option value="lose">落選</option>
+        <option value="hold">保留</option>
+        <option value="nores">抽選未定</option>
+        <option value="unpaid">未入金（確定分）</option>
+        <option value="paid">入金済み</option>
+      </select>
+    </div>
+    <div class="list" id="list"><div class="loading">読み込み中…</div></div>
+  </div>
+</div>
+
+<div class="ov" id="ov" hidden>
+  <div class="md" id="md"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const API='https://script.google.com/macros/s/AKfycbySXR6ThrZVRaBEBClEXRF7SXIwOlahXql8AsMD4lOvs736n6xWdZFhPIvBDitlHKQZ/exec';
+  const CAP=13;
+  const $=id=>document.getElementById(id);
+  const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const yen=n=>'¥'+Number(n||0).toLocaleString();
+  let PIN='', ITEMS=[];
+
+  function store(get,v){ try{ if(get) return sessionStorage.getItem('rpPin')||''; if(v===null) sessionStorage.removeItem('rpPin'); else sessionStorage.setItem('rpPin',v);}catch(e){ return ''; } }
+  async function api(action,extra){
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action:action,pin:PIN},extra||{}))});
+    return res.json();
+  }
+  function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1800); }
+
+  const isConf=o=>o['ステータス']==='確認済み';
+  const fixTel=v=>{ let t=String(v==null?'':v).trim(); if(/^[1-9]\d{8,9}$/.test(t)) t='0'+t; return t||'—'; };
+  const num=v=>Number(v)||0;
+
+  async function login(){
+    const v=$('pin').value.trim(); if(!v){ $('lgErr').textContent='PINを入力してください'; return; }
+    PIN=v; $('loginBtn').disabled=true; $('lgErr').textContent='確認中…';
+    try{
+      const r=await api('rp_admin_list');
+      if(r.status!=='ok'){ $('lgErr').textContent=r.message||'エラー'; PIN=''; $('loginBtn').disabled=false; return; }
+      store(false,PIN); ITEMS=r.items||[];
+      $('login').hidden=true; $('app').hidden=false; render();
+    }catch(e){ $('lgErr').textContent='通信エラー'; PIN=''; }
+    $('loginBtn').disabled=false;
+  }
+  async function reload(){
+    $('list').innerHTML='<div class="loading">読み込み中…</div>';
+    try{ const r=await api('rp_admin_list'); if(r.status!=='ok'){ if(r.code==='pin'){ logout(); return; } toast(r.message); return; } ITEMS=r.items||[]; render(); }
+    catch(e){ toast('通信エラー'); }
+  }
+  function logout(){ store(false,null); PIN=''; ITEMS=[]; $('app').hidden=true; $('login').hidden=false; $('pin').value=''; $('lgErr').textContent=''; }
+
+  function render(){
+    const now=new Date(); $('upd').textContent='最終更新 '+now.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+    const conf=ITEMS.filter(isConf), unconf=ITEMS.filter(o=>!isConf(o));
+    const ppl=conf.reduce((a,o)=>a+num(o['合計人数']),0);
+    const fee=conf.reduce((a,o)=>a+num(o['合計金額']),0);
+    const paid=conf.filter(o=>o['入金']==='入金済み');
+    const paidFee=paid.reduce((a,o)=>a+num(o['合計金額']),0);
+    const win=conf.filter(o=>o['抽選結果']==='当選').length;
+    const over=conf.length-CAP;
+    $('kpi').innerHTML=
+      k('確定申込',conf.length+'組','未確認 '+unconf.length+'組')+
+      '<div class="k cap'+(over>0?' over':'')+'"><div class="l">定員 '+CAP+'組</div><div class="v">'+(over>0?over+'組超過':'残り'+(CAP-conf.length))+'</div><div class="s">'+(over>0?'抽選が必要':'抽選不要（現時点）')+'</div></div>'+
+      k('合計人数',ppl+'名','確定分')+
+      k('参加費合計',yen(fee),'確定分')+
+      k('入金済み',paid.length+'組',yen(paidFee))+
+      k('当選',win+'組','抽選結果');
+    $('tal').innerHTML=tally('ジャンル別（確定）',conf,'ジャンル')+tally('エリア区分別（確定）',conf,'エリア区分',['入間市','近郊市','遠方'])+tally('希望時間帯・第1（確定）',conf,'希望時間帯(第1)',['午前中','昼〜夕方','夕方〜夜','いつでも可']);
+    renderList();
+  }
+  function k(l,v,s){ return '<div class="k"><div class="l">'+esc(l)+'</div><div class="v">'+esc(v)+'</div><div class="s">'+esc(s)+'</div></div>'; }
+  function tally(title,arr,key,order){
+    const m={}; arr.forEach(o=>{ const v=String(o[key]||'未入力'); m[v]=(m[v]||0)+1; });
+    let keys=Object.keys(m); if(order){ keys=order.filter(x=>m[x]).concat(keys.filter(x=>order.indexOf(x)<0)); } else keys.sort((a,b)=>m[b]-m[a]);
+    const max=Math.max(1,...keys.map(x=>m[x]));
+    const body=keys.length?keys.map(x=>'<div class="bar"><span>'+esc(x)+'</span><div class="tr"><div class="fi" style="width:'+(m[x]/max*100)+'%"></div></div><span class="n">'+m[x]+'</span></div>').join(''):'<div class="empty">データなし</div>';
+    return '<div class="t"><h3>'+esc(title)+'</h3>'+body+'</div>';
+  }
+  function badges(o){
+    let b=isConf(o)?'<span class="bd b-ac">確定</span>':'<span class="bd b-mu">未確認</span>';
+    if(isConf(o)) b+= o['入金']==='入金済み'?'<span class="bd b-ok">入金済み</span>':'<span class="bd b-wa">未入金</span>';
+    const r=o['抽選結果']; if(r==='当選') b+='<span class="bd b-ok">当選</span>'; else if(r==='落選') b+='<span class="bd b-ng">落選</span>'; else if(r==='保留') b+='<span class="bd b-wa">保留</span>';
+    return b;
+  }
+  function renderList(){
+    const q=$('q').value.trim().toLowerCase(), f=$('filter').value;
+    const arr=ITEMS.filter(o=>{
+      if(q && (String(o['バンド名'])+String(o['代表者氏名'])).toLowerCase().indexOf(q)<0) return false;
+      switch(f){
+        case 'conf': return isConf(o); case 'unconf': return !isConf(o);
+        case 'win': return o['抽選結果']==='当選'; case 'lose': return o['抽選結果']==='落選'; case 'hold': return o['抽選結果']==='保留';
+        case 'nores': return isConf(o)&&!o['抽選結果'];
+        case 'unpaid': return isConf(o)&&o['入金']!=='入金済み'; case 'paid': return o['入金']==='入金済み';
+      } return true;
+    }).slice().reverse();
+    $('list').innerHTML=arr.length?arr.map(o=>
+      '<div class="row" data-r="'+esc(o['受付番号'])+'"><div class="m"><div class="nm">'+esc(o['バンド名'])+'</div>'+
+      '<div class="sub">'+esc(o['ジャンル'])+' ／ '+esc(o['エリア区分'])+'（'+esc(o['活動市区町村'])+'）／ '+esc(o['合計人数'])+'名 ／ '+esc(o['受付番号'])+'</div>'+
+      '<div>'+badges(o)+'</div></div><div class="r"><div class="yen">'+yen(o['合計金額'])+'</div></div></div>'
+    ).join(''):'<div class="empty">該当なし</div>';
+    document.querySelectorAll('.row').forEach(el=>el.addEventListener('click',()=>openDetail(el.dataset.r)));
+  }
+
+  function openDetail(rc){
+    const o=ITEMS.find(x=>String(x['受付番号'])===String(rc)); if(!o) return;
+    const f=[['受付日時','タイムスタンプ'],['状態','ステータス'],['ジャンル','ジャンル'],['活動エリア',null],['合計人数','合計人数'],['人数内訳',null],['高校生以下','高校生以下人数'],['参加費合計',null],['代表者','代表者氏名'],['メール','メールアドレス'],['電話','電話番号'],['希望時間帯',null],['備考','備考']];
+    const val=(lab,key)=>{
+      if(lab==='活動エリア') return (o['活動都道府県']||'')+' '+(o['活動市区町村']||'')+'（'+(o['エリア区分']||'')+'）';
+      if(lab==='人数内訳') return 'Studio会員'+num(o['Studio会員数'])+'／7月RP・FL出演者'+num(o['7月RP・FL出演者数'])+'／ビジター'+num(o['ビジター数']);
+      if(lab==='参加費合計') return yen(o['合計金額']);
+      if(lab==='希望時間帯') return (o['希望時間帯(第1)']||'')+(o['希望時間帯(第2)']?'（第2: '+o['希望時間帯(第2)']+'）':'');
+      if(lab==='状態') return isConf(o)?'確定（メール確認済み）':'未確認（本申し込みメール未クリック）';
+      if(lab==='電話') return fixTel(o['電話番号']);
+      return o[key]==null||o[key]===''?'—':o[key];
+    };
+    const seg=(field,opts,cur)=>'<div class="seg" data-field="'+field+'">'+opts.map(x=>'<button type="button" data-v="'+esc(x[0])+'" class="'+(String(cur||'')===x[0]?'on':'')+'">'+esc(x[1])+'</button>').join('')+'</div>';
+    $('md').innerHTML='<h3>'+esc(o['バンド名'])+'</h3><div class="rc">'+esc(o['受付番号'])+'</div>'+
+      '<div>'+badges(o)+'</div>'+
+      '<dl class="dl">'+f.map(x=>'<div><dt>'+esc(x[0])+'</dt><dd>'+esc(val(x[0],x[1]))+'</dd></div>').join('')+'</dl>'+
+      '<div class="grp"><div class="gl">入金</div>'+seg('paid',[['入金済み','入金済み'],['未入金','未入金'],['','未設定']],o['入金'])+'</div>'+
+      '<div class="grp"><div class="gl">抽選結果</div>'+seg('result',[['当選','当選'],['落選','落選'],['保留','保留'],['','未定']],o['抽選結果'])+'</div>'+
+      '<div class="grp"><div class="gl">管理メモ（申込者には表示されません）</div><textarea id="memo">'+esc(o['管理メモ']||'')+'</textarea></div>'+
+      '<div class="foot"><button class="btn" id="mdClose">閉じる</button><button class="btn btn-pri" id="memoSave">メモを保存</button></div>';
+    $('ov').hidden=false;
+    $('mdClose').onclick=()=>{ $('ov').hidden=true; };
+    document.querySelectorAll('#md .seg button').forEach(b=>b.onclick=async()=>{
+      const field=b.parentElement.dataset.field, v=b.dataset.v;
+      b.parentElement.querySelectorAll('button').forEach(x=>x.disabled=true);
+      try{ const r=await api('rp_admin_mark',{receipt:rc,field:field,value:v});
+        if(r.status==='ok'){ o[field==='paid'?'入金':'抽選結果']=v; toast('保存しました'); openDetail(rc); render(); } else toast(r.message||'エラー');
+      }catch(e){ toast('通信エラー'); }
+      b.parentElement.querySelectorAll('button').forEach(x=>x.disabled=false);
+    });
+    $('memoSave').onclick=async()=>{
+      const v=$('memo').value; $('memoSave').disabled=true;
+      try{ const r=await api('rp_admin_memo',{receipt:rc,memo:v}); if(r.status==='ok'){ o['管理メモ']=v; toast('メモを保存しました'); } else toast(r.message||'エラー'); }
+      catch(e){ toast('通信エラー'); }
+      $('memoSave').disabled=false;
+    };
+  }
+  $('ov').addEventListener('click',e=>{ if(e.target===$('ov')) $('ov').hidden=true; });
+
+  function csv(){
+    if(!ITEMS.length){ toast('データがありません'); return; }
+    const keys=Object.keys(ITEMS[0]);
+    const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+    const lines=[keys.map(q).join(',')].concat(ITEMS.map(o=>keys.map(k=>q(k==='電話番号'?fixTel(o[k]):o[k])).join(',')));
+    const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='RP応募_'+new Date().toISOString().slice(0,10)+'.csv'; document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  $('loginBtn').onclick=login;
+  $('pin').addEventListener('keydown',e=>{ if(e.key==='Enter') login(); });
+  $('reloadBtn').onclick=reload; $('logoutBtn').onclick=logout; $('csvBtn').onclick=csv;
+  $('q').addEventListener('input',renderList); $('filter').addEventListener('change',renderList);
+
+  const saved=store(true); if(saved){ $('pin').value=saved; login(); }
+})();
+</script>
+</body>
+</html>
