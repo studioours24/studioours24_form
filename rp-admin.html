@@ -87,7 +87,7 @@ button{font:inherit;cursor:pointer}
 .toast.show{opacity:1}
 .loading{color:var(--tx2);font-size:.9rem;padding:1rem 0}
 /* ===== 初見向け ===== */
-.deadline{display:inline-flex;align-items:center;gap:.4rem;margin-top:.5rem;padding:.3rem .75rem;border-radius:100px;font-size:.8rem;font-weight:700;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.35);color:var(--ac2)}
+.deadline{display:inline-flex;white-space:nowrap;align-items:center;gap:.4rem;margin-top:.5rem;padding:.3rem .75rem;border-radius:100px;font-size:.8rem;font-weight:700;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.35);color:var(--ac2)}
 .deadline.closed{background:rgba(255,255,255,.05);border-color:var(--line);color:var(--tx2)}
 .guide{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:1.25rem}
 .guide summary{cursor:pointer;padding:.85rem 1rem;font-weight:700;font-size:.9rem;list-style:none}
@@ -122,6 +122,27 @@ button{font:inherit;cursor:pointer}
 .k .s{line-height:1.45}
 .legend{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font-size:.75rem;color:var(--tx2);margin:-.25rem 0 .75rem}
 .legend .bd{margin:0 .3rem 0 0}
+/* ===== スマホ最適化・特記事項 ===== */
+.top{flex-wrap:nowrap;align-items:flex-start}
+.top .acts{flex-wrap:nowrap;gap:.35rem;flex:none}
+@media(max-width:699px){
+  .top .acts .btn{font-size:.72rem;padding:.4rem .55rem}
+  .kpi{grid-template-columns:1fr 1fr}
+  .wrap{padding-bottom:5.5rem}
+}
+.talbox{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:1.5rem}
+.talbox summary{cursor:pointer;padding:.85rem 1rem;font-weight:700;font-size:.9rem;list-style:none}
+.talbox summary::-webkit-details-marker{display:none}
+.talbox summary::before{content:'▶';display:inline-block;margin-right:.5rem;font-size:.7rem;color:var(--ac2);transition:transform .15s}
+.talbox[open] summary::before{transform:rotate(90deg)}
+.talbox summary small{font-weight:500;color:var(--tx3);font-size:.75rem;margin-left:.4rem}
+.talbox .tal{padding:0 1rem 1rem;margin-bottom:0}
+.row .yen{margin-top:.35rem}
+.row .memo{margin-top:.45rem;font-size:.8rem;color:var(--warn);background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:8px;padding:.3rem .55rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;background:rgba(6,10,19,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:.4rem .5rem calc(.4rem + env(safe-area-inset-bottom))}
+.bnav button{flex:1;background:none;border:0;color:var(--tx2);font-weight:700;font-size:.85rem;padding:.6rem 0;border-radius:10px}
+.bnav button.on{color:var(--ac2);background:rgba(56,189,248,.1)}
+@media(min-width:700px){.bnav{display:none}}
 </style>
 </head>
 <body>
@@ -169,8 +190,7 @@ button{font:inherit;cursor:pointer}
 
     <div class="sec-t">数字のまとめ <small>申込確定した分のみ</small></div>
     <div class="kpi" id="kpi"></div>
-    <div class="sec-t">内訳 <small>申込確定した分のみ</small></div>
-    <div class="tal" id="tal"></div>
+    <details class="talbox"><summary>内訳を見る（ジャンル・エリア・時間帯）<small>申込確定した分のみ</small></summary><div class="tal" id="tal"></div></details>
 
     <div class="lh">
       <h2 id="listTop">申込一覧</h2>
@@ -187,11 +207,12 @@ button{font:inherit;cursor:pointer}
         <option value="hold">保留</option>
       </select>
     </div>
-    <div class="legend"><span><span class="bd b-ac">申込確定</span>メールまで完了</span><span><span class="bd b-mu">メール未確認</span>まだ確定前</span><span><span class="bd b-ok">入金済み</span></span><span><span class="bd b-wa">入金待ち</span></span><span><span class="bd b-ok">当選</span><span class="bd b-ng">落選</span><span class="bd b-wa">保留</span>抽選結果</span></div>
+    <div class="legend"><span><span class="bd b-ac">申込確定</span>メールまで完了</span><span><span class="bd b-mu">メール未確認</span>まだ確定前</span><span><span class="bd b-ok">入金済み</span></span><span><span class="bd b-wa">入金待ち</span></span><span><span class="bd b-ok">当選</span><span class="bd b-ng">落選</span><span class="bd b-wa">保留</span>抽選結果</span><span><span class="bd b-mu">備考あり</span>申込者の書き込みあり</span><span><span class="memo-dot" style="color:var(--warn)">📌</span> 特記事項（管理用）</span></div>
     <div class="list" id="list"><div class="loading">読み込み中…</div></div>
   </div>
 </div>
 
+<nav class="bnav" id="bnav" hidden><button type="button" id="navTop" class="on">概要</button><button type="button" id="navList">申込一覧</button></nav>
 <div class="ov" id="ov" hidden>
   <div class="md" id="md"></div>
 </div>
@@ -265,11 +286,11 @@ button{font:inherit;cursor:pointer}
     $('todo').innerHTML=(nUn||nPay||(over>0&&nRes))?'<div class="todo">'+items.join('')+'</div>':'<div class="alldone">✓ 今やることはありません</div>';
     document.querySelectorAll('#todo .td').forEach(b=>b.onclick=()=>{ $('filter').value=b.dataset.f; renderList(); $('listTop').scrollIntoView({behavior:'smooth',block:'start'}); });
     $('kpi').innerHTML=
-      k('申込確定',conf.length+'組','本申し込みメールまで完了／メール未確認 '+unconf.length+'組')+
-      k('合計人数',ppl+'名','出演するメンバーの合計')+
-      k('参加費（見込み）',yen(fee),'確定した申込の参加費の合計')+
-      k('入金済み',paid.length+'組','入金額 '+yen(paidFee)+'／入金待ち '+(conf.length-paid.length)+'組')+
-      k('当選',win+'組','抽選で当選にした組');
+      k('申込確定',conf.length+'組','メール未確認 '+unconf.length+'組は含まない')+
+      k('合計人数',ppl+'名','出演メンバーの合計')+
+      k('参加費（見込み）',yen(fee),'確定した申込の合計')+
+      k('入金済み',paid.length+'組',yen(paidFee)+'／入金待ち '+(conf.length-paid.length)+'組')+
+      (over>0?k('当選',win+'組','抽選で当選にした組'):'');
     $('tal').innerHTML=tally('ジャンル',conf,'ジャンル')+tally('活動エリア（入間市／近郊市／遠方）',conf,'エリア区分',['入間市','近郊市','遠方'])+tally('希望の出演時間帯（第1希望）',conf,'希望時間帯(第1)',['午前中','昼〜夕方','夕方〜夜','いつでも可']);
     renderList();
   }
@@ -301,7 +322,10 @@ button{font:inherit;cursor:pointer}
     $('list').innerHTML=arr.length?arr.map(o=>
       '<div class="row" data-r="'+esc(o['受付番号'])+'"><div class="m"><div class="nm">'+esc(o['バンド名'])+'</div>'+
       '<div class="sub">'+esc(o['ジャンル'])+' ／ '+esc(o['エリア区分'])+'（'+esc(o['活動市区町村'])+'）／ '+esc(o['合計人数'])+'名 ／ '+esc(o['受付番号'])+'</div>'+
-      '<div>'+badges(o)+'</div></div><div class="r"><div class="yen">'+yen(o['合計金額'])+'</div></div></div>'
+      '<div>'+badges(o)+(String(o['備考']||'').trim()?'<span class="bd b-mu">備考あり</span>':'')+'</div>'+
+      '<div class="yen">'+yen(o['合計金額'])+'</div>'+
+      (String(o['管理メモ']||'').trim()?'<div class="memo">📌 '+esc(o['管理メモ'])+'</div>':'')+
+      '</div></div>'
     ).join(''):'<div class="empty">該当なし</div>';
     document.querySelectorAll('.row').forEach(el=>el.addEventListener('click',()=>openDetail(el.dataset.r)));
   }
@@ -324,8 +348,8 @@ button{font:inherit;cursor:pointer}
       '<dl class="dl">'+f.map(x=>'<div><dt>'+esc(x[0])+'</dt><dd>'+esc(val(x[0],x[1]))+'</dd></div>').join('')+'</dl>'+
       '<div class="grp"><div class="gl">入金（受け取ったら「入金済み」を押す）</div>'+seg('paid',[['入金済み','入金済み'],['未入金','入金待ち'],['','未記録']],o['入金'])+'</div>'+
       '<div class="grp"><div class="gl">抽選結果（定員超過で抽選した場合に記録）</div>'+seg('result',[['当選','当選'],['落選','落選'],['保留','保留'],['','未定']],o['抽選結果'])+'</div>'+
-      '<div class="grp"><div class="gl">管理メモ（申込者には表示されません）</div><textarea id="memo">'+esc(o['管理メモ']||'')+'</textarea></div>'+
-      '<div class="foot"><button class="btn" id="mdClose">閉じる</button><button class="btn btn-pri" id="memoSave">メモを保存</button></div>';
+      '<div class="grp"><div class="gl">特記事項（管理用・申込者には表示されません。一覧にも表示されます）</div><textarea id="memo" placeholder="例：機材を持ち込み／10時台は出られない／要連絡">'+esc(o['管理メモ']||'')+'</textarea></div>'+
+      '<div class="foot"><button class="btn" id="mdClose">閉じる</button><button class="btn btn-pri" id="memoSave">特記事項を保存</button></div>';
     $('ov').hidden=false;
     $('mdClose').onclick=()=>{ $('ov').hidden=true; };
     document.querySelectorAll('#md .seg button').forEach(b=>b.onclick=async()=>{
@@ -338,7 +362,7 @@ button{font:inherit;cursor:pointer}
     });
     $('memoSave').onclick=async()=>{
       const v=$('memo').value; $('memoSave').disabled=true;
-      try{ const r=await api('rp_admin_memo',{receipt:rc,memo:v}); if(r.status==='ok'){ o['管理メモ']=v; toast('メモを保存しました'); } else toast(r.message||'エラー'); }
+      try{ const r=await api('rp_admin_memo',{receipt:rc,memo:v}); if(r.status==='ok'){ o['管理メモ']=v; toast('特記事項を保存しました'); renderList(); } else toast(r.message||'エラー'); }
       catch(e){ toast('通信エラー'); }
       $('memoSave').disabled=false;
     };
@@ -361,6 +385,15 @@ button{font:inherit;cursor:pointer}
   $('q').addEventListener('input',renderList); $('filter').addEventListener('change',renderList);
 
   try{ if(!localStorage.getItem('rpGuideSeen')){ $('guide').open=true; localStorage.setItem('rpGuideSeen','1'); } }catch(e){}
+  (function(){
+    const nav=$('bnav'), t=$('navTop'), l=$('navList');
+    t.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+    l.onclick=()=>$('listTop').scrollIntoView({behavior:'smooth',block:'start'});
+    const sync=()=>{ const lt=$('listTop'); if(!lt) return; const inList=lt.getBoundingClientRect().top<window.innerHeight*0.5; l.classList.toggle('on',inList); t.classList.toggle('on',!inList); };
+    window.addEventListener('scroll',sync,{passive:true});
+    new MutationObserver(()=>{ nav.hidden=$('app').hidden; }).observe($('app'),{attributes:true,attributeFilter:['hidden']});
+    nav.hidden=$('app').hidden;
+  })();
   const saved=store(true); if(saved){ $('pin').value=saved; login(); }
 })();
 </script>
